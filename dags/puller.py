@@ -59,7 +59,7 @@ default_args = {
 
 # [START instantiate_dag]
 @dag(default_args=default_args, schedule_interval=None, start_date=days_ago(2), tags=['idirect_lima'])
-def puller():
+def puller(config):
     """
     ### TaskFlow API Tutorial Documentation
     This is a simple ETL data pipeline example which demonstrates the use of
@@ -96,7 +96,7 @@ def puller():
 
 
 # [START dag_invocation]
-puller = puller()
+puller = puller(config)
 # [END dag_invocation]
 
 # [END tutorial]
