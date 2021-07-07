@@ -103,7 +103,7 @@ def tutorial_taskflow_api_etl():
 
 
 # [START dag_invocation]
-tutorial_etl_dag = tutorial_taskflow_api_etl()
+test_puller = tutorial_taskflow_api_etl()
 # [END dag_invocation]
 
 # [END tutorial]
