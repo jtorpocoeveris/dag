@@ -3,11 +3,8 @@
 # [START]
 # [START import_module]
 import json
-
 from airflow.decorators import dag, task
 from airflow.utils.dates import days_ago
-
-
 import redis
 import requests
 from requests.auth import HTTPBasicAuth
@@ -44,12 +41,6 @@ def puller():
     # [START extract]
     @task()
     def extractDataOld(key):
-        """
-        #### Extract task
-        A simple Extract task to get data ready for the rest of the data
-        pipeline. In this case, getting data is simulated by reading from a
-        hardcoded JSON string.
-        """
         redis_cn = redis.Redis(host= '10.233.49.128',    port= '6379',    password="tmCN3FwkP7")
         response = redis_cn.get(key)
         response = json.loads(response)
@@ -63,36 +54,45 @@ def puller():
     
     config = [
       {
-              "route_trunk": "data",
-
-           "url": "http://192.168.36.50:81/api/v1/evo/config/obj/remote",
+        "route_trunk": "data",
+        "url": "http://192.168.36.50:81/api/v1/evo/config/obj/remote",
         "user": "systemapi",
         "password": "tiws2019",
         "timeout": 120,
         "verify": "False",
         "platform_id": 2,
-              "mysql_table": "bifrost_terminal_test",
-              "mongo_normalization": "puller",
+        "mysql_table": "bifrost_terminal_test",
+        "mongo_normalization": "puller",
         "mongo_limit_time": 55,
         "mongo_collection": "idirect_test_lima",
-        "primary_join_cols": {"mysql":"siteId","mongo":"siteId","platform":"Name","old":"Name"},
-        "secondary_join_cols": {"mysql":[
+        "primary_join_cols": {
+          "mysql": "siteId",
+          "mongo": "siteId",
+          "platform": "Name",
+          "old": "Name"
+        },
+        "secondary_join_cols": {
+          "mysql": [
             "mysql_siteId",
             "mysql_id_nms"
-          ],"mongo":[
+          ],
+          "mongo": [
             "mongo_Name",
             "mongo_ID"
-          ],"platform":[
+          ],
+          "platform": [
             "platform_Name",
             "platform_ID"
-          ],"old":[
+          ],
+          "old": [
             "old_Name",
             "old_ID"
-          ]},
-        "platform_name": "idirect_lima"}
+          ]
+        },
+        "platform_name": "idirect_lima"
+      }
     ]
     key_process = str(config["platform_id"])+"-"+str(config["platform_name"])
-    print("---------------- OLD ---------")
     order_data = extractDataOld(key_process)
     # [END main_flow]
 
