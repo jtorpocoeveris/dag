@@ -13,9 +13,39 @@ import requests
 from requests.auth import HTTPBasicAuth
 import pandas as pd
 
-config = open("config.json","r")
-config = json.loads(config.read())
-config = config[0]
+# config = open("config.json","r")
+# config = json.loads(config.read())
+# config = config[0]
+config = [
+  {
+          "route_trunk": "data",
+
+       "url": "http://192.168.36.50:81/api/v1/evo/config/obj/remote",
+    "user": "systemapi",
+    "password": "tiws2019",
+    "timeout": 120,
+    "verify": "False",
+    "platform_id": 2,
+          "mysql_table": "bifrost_terminal_test",
+          "mongo_normalization": "puller",
+    "mongo_limit_time": 55,
+    "mongo_collection": "idirect_test_lima",
+    "primary_join_cols": {"mysql":"siteId","mongo":"siteId","platform":"Name","old":"Name"},
+    "secondary_join_cols": {"mysql":[
+        "mysql_siteId",
+        "mysql_id_nms"
+      ],"mongo":[
+        "mongo_Name",
+        "mongo_ID"
+      ],"platform":[
+        "platform_Name",
+        "platform_ID"
+      ],"old":[
+        "old_Name",
+        "old_ID"
+      ]},
+    "platform_name": "idirect_lima"}
+    ]
 # [END import_module]
 
 # [START default_args]
