@@ -92,7 +92,7 @@ def puller():
         "platform_name": "idirect_lima"
       }
     ]
-    key_process = str(config["platform_id"])+"-"+str(config["platform_name"])
+    key_process = str(config[0]["platform_id"])+"-"+str(config[0]["platform_name"])
     order_data = extract_old(key_process)
     # [END main_flow]
 
