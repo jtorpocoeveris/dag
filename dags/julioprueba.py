@@ -38,7 +38,7 @@ default_args = {
 
 # [START instantiate_dag]
 @dag(default_args=default_args, schedule_interval=None, start_date=days_ago(2), tags=['example'])
-def tutorial_taskflow_api_etl():
+def test_puller():
     """
     ### TaskFlow API Tutorial Documentation
     This is a simple ETL data pipeline example which demonstrates the use of
@@ -103,7 +103,7 @@ def tutorial_taskflow_api_etl():
 
 
 # [START dag_invocation]
-test_puller = tutorial_taskflow_api_etl()
+test_puller = test_puller()
 # [END dag_invocation]
 
 # [END tutorial]
