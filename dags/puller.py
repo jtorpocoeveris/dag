@@ -40,7 +40,7 @@ def puller():
 
     # [START extract]
     @task()
-    def extractDataOld(key):
+    def extract_old(key):
         redis_cn = redis.Redis(host= '10.233.49.128',    port= '6379',    password="tmCN3FwkP7")
         response = redis_cn.get(key)
         response = json.loads(response)
@@ -93,7 +93,7 @@ def puller():
       }
     ]
     key_process = str(config["platform_id"])+"-"+str(config["platform_name"])
-    order_data = extractDataOld(key_process)
+    order_data = extract_old(key_process)
     # [END main_flow]
 
 
