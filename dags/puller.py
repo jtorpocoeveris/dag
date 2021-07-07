@@ -50,6 +50,18 @@ def puller():
 
     # [END extract]
 
+    # [START load]
+    @task()
+    def load(data):
+        """
+        #### Load task
+        A simple Load task which takes in the result of the Transform task and
+        instead of saving it to end user review, just prints it out.
+        """
+
+        print(data)
+
+    # [END load]
     # [START main_flow]
     
     config = [
@@ -94,6 +106,7 @@ def puller():
     ]
     key_process = str(config[0]["platform_id"])+"-"+str(config[0]["platform_name"])
     order_data = extract_old(key_process)
+    load(order_data)
     # [END main_flow]
 
 
