@@ -13,6 +13,9 @@ import requests
 from requests.auth import HTTPBasicAuth
 import pandas as pd
 
+config = open("config.json","r")
+config = json.loads(config.read())
+config = config[0]
 # [END import_module]
 
 # [START default_args]
