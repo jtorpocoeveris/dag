@@ -35,6 +35,7 @@ def puller():
     from requests.auth import HTTPBasicAuth
     import pandas as pd
     from pandas.io.json import json_normalize
+    import pymongo
     from pymongo import MongoClient
     from bson.json_util import dumps,loads
     from functools import reduce
