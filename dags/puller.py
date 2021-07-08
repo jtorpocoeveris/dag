@@ -30,7 +30,7 @@ default_args = {
 
 # [START instantiate_dag]
 @dag(default_args=default_args, schedule_interval=None, start_date=days_ago(2), tags=['idirect_lima'])
-def puller():
+def puller_idirect():
 
     from requests.auth import HTTPBasicAuth
     import pandas as pd
@@ -268,7 +268,7 @@ def puller():
 
 
 # [START dag_invocation]
-puller = puller()
+puller_idirect = puller_idirect()
 # [END dag_invocation]
 
 # [END tutorial]
