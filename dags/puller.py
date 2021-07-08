@@ -189,8 +189,9 @@ def puller_idirect():
     def extract_mysql(engine,config):
         query = "SELECT  * FROM "+str(config['mysql_table'])+" where status = 1 and  platformId = "+str(config['platform_id'])
         df_mysql_total = pd.read_sql_query(query, engine)
-        df_mysql_total = df_mysql_total[df_mysql_total.columns].add_prefix('mysql_')
-        df_mysql_total = generateConcatKey(df_mysql_total,['mysql_'+config['primary_join_cols']['mysql']])
+        # df_mysql_total = df_mysql_total[df_mysql_total.columns].add_prefix('mysql_')
+        df_mysql_total = generateConcatKey(df_mysql_total,[config['primary_join_cols']['mysql']])
+        # df_mysql_total = generateConcatKey(df_mysql_total,['mysql_'+config['primary_join_cols']['mysql']])
         df_mysql_total = generateConcatKeySecondary(df_mysql_total,config['secondary_join_cols']['mysql'])
         df_mysql_total = df_mysql_total.to_json(orient='records')
         return {'data': df_mysql_total, 'status':200}
@@ -287,14 +288,15 @@ def puller_idirect():
     ]
     config = config[0]
     key_process = str(config["platform_id"])+"-"+str(config["platform_name"])
-    # platform_data = extract_platform(config)
+    platform_data = extract_platform(config)['data']
+    old_data = extract_old(key_process,config)['data']
     # mysql_data = extract_mysql(engine,config)
     # mongo_data = extract_mongo(db_,config)
     # old_vs_new = comparate_old_vs_new( extract_platform(config)['data'],extract_old(key_process)['data'])
     # primary_vs_mysql = comparate_primary_mysql(old_vs_new['both'],mysql_data['data'],platform_data['data'])
     
     # platform_data
-    old_vs_new = comparate_old_vs_new(extract_platform(config)['data'],extract_old(key_process,config)['data']) 
+    [platform_data,old_data] >> comparate_old_vs_new(platform_data,old_data) 
     # old_vs_new
     old_vs_new >> comparate_primary_mysql(old_vs_new['both'], extract_mysql(engine,config)['data'],old_vs_new['platform_data'])
     # primary_vs_mysql
