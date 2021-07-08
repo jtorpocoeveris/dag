@@ -39,10 +39,9 @@ def puller_idirect():
     from requests.auth import HTTPBasicAuth
     import pandas as pd
     from pandas.io.json import json_normalize
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "pymongo"])
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "confluent_kafka"])
+    # subprocess.check_call([sys.executable, "-m", "pip", "install", "pymongo"])
+    # subprocess.check_call([sys.executable, "-m", "pip", "install", "confluent_kafka"])
     subprocess.check_call([sys.executable, "-m", "pip", "install", "kafka"])
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "bson"])
     from pymongo import MongoClient
     #from bson.json_util import dumps,loads
     from functools import reduce
@@ -54,7 +53,7 @@ def puller_idirect():
     from kafka.errors import KafkaError
     uri = "mongodb://bifrostProdUser:Maniac321.@cluster0-shard-00-00.bvdlk.mongodb.net:27017,cluster0-shard-00-01.bvdlk.mongodb.net:27017,cluster0-shard-00-02.bvdlk.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-nn38a4-shard-0&authSource=admin&retryWrites=true&w=majority"
     conection = MongoClient(uri)
-    db_ = []
+    db_ = conection["bifrost"]
 
     # config = open("config.json","r")
     # config = json.loads(config.read())
@@ -261,12 +260,12 @@ def puller_idirect():
     platform_data = extract_platform(config)
     old_data = extract_old(key_process)
     old_vs_new = comparate_old_vs_new(platform_data['data'],old_data['data'])
-    # mongo_data = extract_mongo(db_,config)
+    mongo_data = extract_mongo(db_,config)
     # mysql_data = extract_mysql(key_process)
     # primary_vs_mysql = comparate_primary_mysql(old_vs_new['both'],mysql_data['data'],platform_data['data'])
 
     # mysql_data
-    # mongo_data
+    mongo_data
     [platform_data,old_data] >> old_vs_new
     # old_vs_new >> primary_vs_mysql 
     # << mysql_data
