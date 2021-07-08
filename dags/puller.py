@@ -129,8 +129,8 @@ def puller():
     key_process = str(config[0]["platform_id"])+"-"+str(config[0]["platform_name"])
     platform_data = extract_platform(key_process)
     old_data = extract_old(key_process)
-    mongo_data = extract_old(key_process)
-    mysql_data = extract_old(key_process)
+    mongo_data = extract_mongo(key_process)
+    mysql_data = extract_mysql(key_process)
     # load(order_data,platform_data)
     platform_data >> [old_data,mongo_data,mysql_data]
     # [END main_flow]
