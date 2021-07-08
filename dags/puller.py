@@ -88,29 +88,45 @@ def puller():
                         response=response[x]
             except:
                 print("ERROR IN route_trunk")
-            # response = pd.DataFrame(response) 
-            # response = response[response.columns].add_prefix('platform_')
-                response = []
+            response = pd.DataFrame(response) 
+            response = response[response.columns].add_prefix('platform_')
+
 
         except requests.exceptions.RequestException as e:
             response = []
             print("ERROR IN GET DATA PLATFORM")
+        return response.to_json(orient='records')
+    @task()
+    def extract_mongo(db_,config):
+        coltn_mdb = db_[config['mongo_collection']]
         
-        return response
+        if config['mongo_limit_time']:
+            now_day = datetime.now() 
+            day_generate = now_day 
+            day_generate = day_generate  - timedelta(minutes=50) 
+    #         day_generate = day_generate  - timedelta(minutes=config['mongo_limit_time']) 
+            data_mongo = coltn_mdb.find({'platform':config['platform_id']})
+    #         data_mongo = coltn_mdb.find({'timeP':{'$gte':day_generate.strftime("%Y-%m-%d %H:%M:%S")},'platform':config['platform_id']})
+        else:
+            data_mongo = coltn_mdb.find({'platform':config['platform_id']})
+        list_cur = list(data_mongo)
+        if len(list_cur)==0:
+            return pd.DataFrame()
+        json_data = dumps(list_cur, indent = 2)
+        df_datamongo = pd.DataFrame(loads(json_data))
+        df_datamongo_origin = pd.DataFrame(loads(json_data))
+        df_datamongo = df_datamongo[config['mongo_normalization']].apply(pd.Series)
+        df_datamongo[df_datamongo_origin.columns] = df_datamongo_origin
+        del df_datamongo[config['mongo_normalization']]
+        df_datamongo = df_datamongo[df_datamongo.columns].add_prefix('mongo_')
+        return df_datamongo.to_json(orient='records')
 
     @task()
-    def extract_mongo(key):
-        # df = pd.DataFrame(response)
-        # df = df[df.columns].add_prefix('old_')
-        # return df
-        return ['ok']
-
-    @task()
-    def extract_mysql(key):
-        # df = pd.DataFrame(response)
-        # df = df[df.columns].add_prefix('old_')
-        # return df
-        return ['ok']
+    def extract_mysql(engine,config):
+        query = "SELECT  * FROM "+str(config['mysql_table'])+" where status = 1 and  platformId = "+str(config['platform_id'])
+        df_mysql_total = pd.read_sql_query(query, engine)
+        df_mysql_total = df_mysql_total[df_mysql_total.columns].add_prefix('mysql_')
+        return df_mysql_total.to_json(orient='records')
 
 
     @task()
@@ -182,7 +198,7 @@ def puller():
     platform_data = extract_platform(config)
     old_data = extract_old(key_process)
     old_vs_new = comparate_old_vs_new(platform_data,old_data)
-    mongo_data = extract_mongo(key_process)
+    mongo_data = extract_mongo(db_,config)
     mysql_data = extract_mysql(key_process)
 
     [platform_data,old_data] >> old_vs_new
