@@ -5,8 +5,8 @@
 import redis
 import json
 import requests
-from confluent_kafka import Producer
-
+# from confluent_kafka import Producer
+import pandas as pd
 from airflow.decorators import dag, task
 from airflow.utils.dates import days_ago
 from airflow.models.baseoperator import cross_downstream
