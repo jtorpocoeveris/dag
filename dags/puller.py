@@ -208,14 +208,14 @@ def puller_idirect():
         df2 = pd.DataFrame(data_old)
         print(df1)
         print(df2)
-        # df1 = pd.DataFrame(df1['concat_key_generate'])
-        # df2 = pd.DataFrame(df2['concat_key_generate'])
+        df1 = pd.DataFrame(df1['concat_key_generate'])
+        df2 = pd.DataFrame(df2['concat_key_generate'])
         comparation = df1.merge(
             df2,
             indicator="_merge_",
             how='outer'
         )
-        return {'platform_data':data_platform,'comparation':comparation.to_json(orient='records')}
+        return {'platform_data':data_platform,'comparation':json.loads(comparation.to_json(orient='records'))}
 
 
     @task()
