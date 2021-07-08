@@ -40,15 +40,18 @@ def puller_idirect():
     import pandas as pd
     from pandas.io.json import json_normalize
     subprocess.check_call([sys.executable, "-m", "pip", "install", "pymongo"])
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "confluent_kafka"])
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "kafka"])
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "bson"])
     from pymongo import MongoClient
     #from bson.json_util import dumps,loads
     from functools import reduce
     from datetime import datetime,timedelta
     from sqlalchemy import create_engine,text
     import numpy as np
-    # import confluent_kafka
-    #import kafka
-    #from kafka.errors import KafkaError
+    import confluent_kafka
+    import kafka
+    from kafka.errors import KafkaError
     uri = "mongodb://bifrostProdUser:Maniac321.@cluster0-shard-00-00.bvdlk.mongodb.net:27017,cluster0-shard-00-01.bvdlk.mongodb.net:27017,cluster0-shard-00-02.bvdlk.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-nn38a4-shard-0&authSource=admin&retryWrites=true&w=majority"
     conection = MongoClient(uri)
     db_ = []
