@@ -132,16 +132,16 @@ def puller_idirect():
                     else:
                         response=response[x]
 
-                response =  pd.DataFrame(response) 
-                response = response[response.columns].add_prefix('platform_')
-                response = generateConcatKey(response,['platform_'+config['primary_join_cols']['platform']])
-                response = generateConcatKeySecondary(response,config['secondary_join_cols']['platform'])
-                response = response.to_json(orient='records')
+                # response =  pd.DataFrame(response) 
+                # response = response[response.columns].add_prefix('platform_')
+                # response = generateConcatKey(response,['platform_'+config['primary_join_cols']['platform']])
+                # response = generateConcatKeySecondary(response,config['secondary_join_cols']['platform'])
+                # response = response.to_json(orient='records')
             except:
                 print("ERROR IN route_trunk")
             # response = pd.DataFrame(response) 
             # response = response[response.columns].add_prefix('platform_')
-                response = []
+                response = {}
 
         except requests.exceptions.RequestException as e:
             response = {}
