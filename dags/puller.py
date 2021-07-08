@@ -187,12 +187,13 @@ def puller_idirect():
 
     @task()
     def comparate_old_vs_new(data_platform,data_old):
-        comparison_df = df1.merge(
-            df2,
-            indicator="_merge_",
-            how='outer'
-        )
-        return {'both':comparison_df[comparison_df['_merge_']=='both'],'left':comparison_df[comparison_df['_merge_']=='left_only'],'right':comparison_df[comparison_df['_merge_']=='right_only']}
+        return ['ok']
+        # comparison_df = df1.merge(
+        #     df2,
+        #     indicator="_merge_",
+        #     how='outer'
+        # )
+        # return {'both':comparison_df[comparison_df['_merge_']=='both'],'left':comparison_df[comparison_df['_merge_']=='left_only'],'right':comparison_df[comparison_df['_merge_']=='right_only']}
 
 
     @task()
@@ -266,14 +267,14 @@ def puller_idirect():
     config = config[0]
     key_process = str(config["platform_id"])+"-"+str(config["platform_name"])
     platform_data = extract_platform(config)
-    # old_data = extract_old(key_process)
+    old_data = extract_old(key_process)
     # mysql_data = extract_mysql(engine,config)
     # mongo_data = extract_mongo(db_,config)
     # old_vs_new = comparate_old_vs_new( extract_platform(config)['data'],extract_old(key_process)['data'])
     # primary_vs_mysql = comparate_primary_mysql(old_vs_new['both'],mysql_data['data'],platform_data['data'])
     
     # platform_data
-    load(platform_data)
+    comparate_old_vs_new(platform_data['data'],old_data['data'])
     # mysql_data
     # old_vs_new
     # primary_vs_mysql
