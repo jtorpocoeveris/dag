@@ -63,16 +63,43 @@ def puller():
     """
     # [END instantiate_dag]
 
+
+
+
+    def generateConcatKeySecondary(df,cols):
+        try:
+            df_stnd_key = df[cols].astype(str) 
+            df_stnd_key['concat_key_generate_secondary'] = df_stnd_key[cols].agg('-'.join, axis=1)
+            df['concat_key_generate_secondary'] = df_stnd_key['concat_key_generate_secondary']
+            return df
+        except:
+            print("ERROR IN COLUMNS")
+            
+    def generateConcatKey(df,cols):
+        try:
+            df_stnd_key = df[cols].astype(str) 
+            df_stnd_key['concat_key_generate'] = df_stnd_key[cols].agg('-'.join, axis=1)
+            df['concat_key_generate'] = df_stnd_key['concat_key_generate']
+            return df
+        except:
+            print("ERROR IN COLUMNS")
+            
+            
+
+
+            
     # [START extract]
     @task()
     def extract_old(key):
         redis_cn = redis.Redis(host= '10.233.49.128',    port= '6379',    password="tmCN3FwkP7")
         response = redis_cn.get(key)
         response = json.loads(response)
-        # df = pd.DataFrame(response)
-        # df = df[df.columns].add_prefix('old_')
-        # return df
-        return response
+        df = pd.DataFrame(response)
+        df = df[df.columns].add_prefix('old_')
+        return {'data': df, 'status':200}
+
+
+
 
     @task()
     def extract_platform(config):
@@ -95,7 +122,11 @@ def puller():
         except requests.exceptions.RequestException as e:
             response = []
             print("ERROR IN GET DATA PLATFORM")
-        return response.to_json(orient='records')
+        # return response.to_json(orient='records')
+        return {'data': response, 'status':200}
+
+
+
     @task()
     def extract_mongo(db_,config):
         coltn_mdb = db_[config['mongo_collection']]
@@ -119,23 +150,31 @@ def puller():
         df_datamongo[df_datamongo_origin.columns] = df_datamongo_origin
         del df_datamongo[config['mongo_normalization']]
         df_datamongo = df_datamongo[df_datamongo.columns].add_prefix('mongo_')
-        return df_datamongo.to_json(orient='records')
+        return {'data': df_datamongo, 'status':200}
+
+
+
 
     @task()
     def extract_mysql(engine,config):
         query = "SELECT  * FROM "+str(config['mysql_table'])+" where status = 1 and  platformId = "+str(config['platform_id'])
         df_mysql_total = pd.read_sql_query(query, engine)
         df_mysql_total = df_mysql_total[df_mysql_total.columns].add_prefix('mysql_')
-        return df_mysql_total.to_json(orient='records')
+        return {'data': df_mysql_total, 'status':200}
+
+
+
 
 
     @task()
     def comparate_old_vs_new(data_platform,data_old):
-        # df_plat_vs_old = dataframe_difference(pd.DataFrame(df_plat['concat_key_generate']),pd.DataFrame(df_old['concat_key_generate']))
-        # df = pd.DataFrame(response)
-        # df = df[df.columns].add_prefix('old_')
-        # return df
-        return ['compare ok']
+        comparison_df = df1.merge(
+            df2,
+            indicator="_merge_",
+            how='outer'
+        )
+        return {'both':comparison_df[comparison_df['_merge_']=='both'],'left':comparison_df[comparison_df['_merge_']=='left_only'],'right':comparison_df[comparison_df['_merge_']=='right_only']}
+
 
     # [END extract]
 
@@ -197,7 +236,7 @@ def puller():
 
     platform_data = extract_platform(config)
     old_data = extract_old(key_process)
-    old_vs_new = comparate_old_vs_new(platform_data,old_data)
+    old_vs_new = comparate_old_vs_new(platform_data['data'],old_data['data'])
     mongo_data = extract_mongo(db_,config)
     mysql_data = extract_mysql(key_process)
 
