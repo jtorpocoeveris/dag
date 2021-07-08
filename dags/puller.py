@@ -235,8 +235,10 @@ def puller_idirect():
 
     @task()
     def comparate_secondary_mysql(df_mysql,comparate):
-        # df_mysql = pd.DataFrame(json.loads(df_mysql))
-        # comparate = pd.DataFrame(json.loads(comparate['comparation']))
+        df_mysql = pd.DataFrame(json.loads(df_mysql))
+        comparate = pd.DataFrame(json.loads(comparate)
+        # exist_mongo_p = comparate[comparate['exist_mongo']==1]
+
         # both = comparate[comparate['_merge_']=='both']
     # def comparate_primary_mysql(both,df_mysql,df_plat):
         # both['exist_mysql'] = np.where(both['concat_key_generate'].isin(list(df_mysql['concat_key_generate'])) , 1, 0)
