@@ -115,7 +115,7 @@ def puller_idirect():
         # df_old = generateConcatKey(df_old,[config['primary_join_cols']['old']])
         # df_old = generateConcatKey(df_old,['old_'+config['primary_join_cols']['old']])
         # df_old = generateConcatKeySecondary(df_old,config['secondary_join_cols']['old'])
-        return {'data': response, 'status':200}
+        return response
         # return {'data': df_old.to_json(orient='records'), 'status':200}
 
 
@@ -151,7 +151,7 @@ def puller_idirect():
             print("ERROR IN GET DATA PLATFORM")
         # return response.to_json(orient='records')
         print(response)
-        return {'data': response, 'status':200}
+        return response
 
 
 
@@ -288,8 +288,8 @@ def puller_idirect():
     ]
     config = config[0]
     key_process = str(config["platform_id"])+"-"+str(config["platform_name"])
-    platform_data = extract_platform(config)['data']
-    old_data = extract_old(key_process,config)['data']
+    platform_data = extract_platform(config)
+    old_data = extract_old(key_process,config)
     comp = comparate_old_vs_new(platform_data,old_data)
     # mysql_data = extract_mysql(engine,config)
     # mongo_data = extract_mongo(db_,config)
