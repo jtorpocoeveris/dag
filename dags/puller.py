@@ -203,8 +203,8 @@ def puller_idirect():
 
     @task()
     def comparate_old_vs_new(data_platform,data_old):
-        df1 = pd.DataFrame(data_platform)
-        df2 = pd.DataFrame(data_old)
+        df1 = pd.DataFrame(json.loads(data_platform))
+        df2 = pd.DataFrame(json.loads(data_old))
         print(df1)
         print(df2)
         # df1 = pd.DataFrame(df1['concat_key_generate'])
