@@ -141,7 +141,7 @@ def puller_idirect():
                 print("ERROR IN route_trunk")
             # response = pd.DataFrame(response) 
             # response = response[response.columns].add_prefix('platform_')
-                response = {}
+                response = []
 
         except requests.exceptions.RequestException as e:
             response = {}
@@ -207,7 +207,7 @@ def puller_idirect():
             indicator="_merge_",
             how='outer'
         )
-        return {'both':comparison_df[comparison_df['_merge_']=='both'].to_json(orient='records'),'left':comparison_df[comparison_df['_merge_']=='left_only'].to_json(orient='records'),'right':comparison_df[comparison_df['_merge_']=='right_only'].to_json(orient='records')}
+        return {'data_platform':data_platform,'both':comparison_df[comparison_df['_merge_']=='both'].to_json(orient='records'),'left':comparison_df[comparison_df['_merge_']=='left_only'].to_json(orient='records'),'right':comparison_df[comparison_df['_merge_']=='right_only'].to_json(orient='records')}
 
 
     @task()
