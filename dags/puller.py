@@ -290,13 +290,14 @@ def puller_idirect():
     key_process = str(config["platform_id"])+"-"+str(config["platform_name"])
     platform_data = extract_platform(config)['data']
     old_data = extract_old(key_process,config)['data']
+    comp = comparate_old_vs_new(platform_data,old_data)
     # mysql_data = extract_mysql(engine,config)
     # mongo_data = extract_mongo(db_,config)
     # old_vs_new = comparate_old_vs_new( extract_platform(config)['data'],extract_old(key_process)['data'])
     # primary_vs_mysql = comparate_primary_mysql(old_vs_new['both'],mysql_data['data'],platform_data['data'])
     
     # platform_data
-    comparate_old_vs_new(platform_data,old_data) <<  [platform_data,old_data]  
+    old_data >> platform_data >> comp  
     # old_vs_new
     # old_vs_new >> comparate_primary_mysql(old_vs_new['both'], extract_mysql(engine,config)['data'],old_vs_new['platform_data'])
     # primary_vs_mysql
