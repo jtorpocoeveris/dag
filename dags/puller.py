@@ -214,13 +214,11 @@ def puller_idirect():
         both = pd.DataFrame(both)
         df_mysql = pd.DataFrame(df_mysql)
         df_plat = pd.DataFrame(df_plat)
-        both['exist_mysql'] = np.where(both['concat_key_generate'].isin(list(df_mysql['concat_key_generate'])) , 1, 0)
-        not_exist_mysql_p = both[both['exist_mysql']==0]
-        sendQueque('insert','mysql',not_exist_mysql_p)
-        ############
-        exist_mysql_p = both[both['exist_mysql']==1]
-        exist_mysql_p = df_plat[df_plat['concat_key_generate'].isin(list(exist_mysql_p['concat_key_generate']))]
-        return {'exist':exist_mysql_p.to_json(orient='records'),'not_exist':not_exist_mysql_p.to_json(orient='records')}
+        df_plat_vs_old = dataframe_difference(pd.DataFrame(df_plat['concat_key_generate']),pd.DataFrame(df_old['concat_key_generate']))
+        only_new = df_plat_vs_old['left']
+        only_old = df_plat_vs_old['right']
+        both = df_plat_vs_old['both']
+        return {'both':both.to_json(orient='records'),'left':only_new.to_json(orient='records'),'right':only_old.to_json(orient='records')}
 
 
     # [END extract]
