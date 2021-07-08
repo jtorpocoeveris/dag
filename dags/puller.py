@@ -150,10 +150,9 @@ def puller():
     task1 = DummyOperator(task_id='extract_old')
     task2 = DummyOperator(task_id='extract_mongo')
     task3 = DummyOperator(task_id='extract_mysql')
-    task4 = DummyOperator(task_id='comparate_old_vs_new', trigger_rule=TriggerRule.ALL_DONE)
-    [task1,latest_only] >> task4
-    task2
-    task3
+    task4 = DummyOperator(task_id='comparate_old_vs_new')
+    latest_only >> task1 >> [task3, task4]
+    task2 >> [task3, task4]
     # [END main_flow]
 
 
