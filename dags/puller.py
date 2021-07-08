@@ -2,7 +2,6 @@
 # pylint: disable=missing-function-docstring
 # [START]
 # [START import_module]
-!pip3  install pymongo pandas redis boto3
 import redis
 import json
 import requests
