@@ -33,11 +33,13 @@ default_args = {
 @dag(default_args=default_args, schedule_interval=None, start_date=days_ago(2), tags=['idirect_lima'])
 def puller_idirect():
     import sys
+    import subprocess
     import os
     sys.path.insert(0,os.path.abspath(os.path.dirname(__file__)))
     from requests.auth import HTTPBasicAuth
     import pandas as pd
     from pandas.io.json import json_normalize
+    subprocess.check_call([sys.executable, "-m", "pip", "pymongo", package])
     from pymongo import MongoClient
     #from bson.json_util import dumps,loads
     from functools import reduce
