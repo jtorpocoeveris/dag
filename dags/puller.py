@@ -58,13 +58,23 @@ def puller():
         # return df
         return ['ok']
 
+    @task()
     def extract_mongo(key):
         # df = pd.DataFrame(response)
         # df = df[df.columns].add_prefix('old_')
         # return df
         return ['ok']
 
+    @task()
     def extract_mysql(key):
+        # df = pd.DataFrame(response)
+        # df = df[df.columns].add_prefix('old_')
+        # return df
+        return ['ok']
+
+
+    @task()
+    def comparate_old_vs_new():
         # df = pd.DataFrame(response)
         # df = df[df.columns].add_prefix('old_')
         # return df
@@ -131,8 +141,9 @@ def puller():
     old_data = extract_old(key_process)
     mongo_data = extract_mongo(key_process)
     mysql_data = extract_mysql(key_process)
+    comparate_old_vs_new = comparate_old_vs_new()
     # load(order_data,platform_data)
-    platform_data >> [old_data,mongo_data,mysql_data]
+    [platform_data,old_data,mongo_data,mysql_data] >> comparate_old_vs_new
     # [END main_flow]
 
 
