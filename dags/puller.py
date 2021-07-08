@@ -256,13 +256,14 @@ def puller():
     old_data = extract_old(key_process)
     old_vs_new = comparate_old_vs_new(platform_data['data'],old_data['data'])
     # mongo_data = extract_mongo(db_,config)
-    mysql_data = extract_mysql(key_process)
-    primary_vs_mysql = comparate_primary_mysql(old_vs_new['both'],mysql_data['data'],platform_data['data'])
+    # mysql_data = extract_mysql(key_process)
+    # primary_vs_mysql = comparate_primary_mysql(old_vs_new['both'],mysql_data['data'],platform_data['data'])
 
-    mysql_data
+    # mysql_data
     # mongo_data
     [platform_data,old_data] >> old_vs_new
-    old_vs_new >> primary_vs_mysql << mysql_data
+    # old_vs_new >> primary_vs_mysql 
+    # << mysql_data
     # [END main_flow]
 
 
