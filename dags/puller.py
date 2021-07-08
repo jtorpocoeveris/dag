@@ -43,6 +43,7 @@ from confluent_kafka import Producer
 # You can override them on a per-task basis during operator initialization
 default_args = {
     'owner': 'airflow',
+    'schedule_interval': '*/5  * * * *'
 }
 # [END default_args]
 
