@@ -75,11 +75,28 @@ def puller():
         return response
 
     @task()
-    def extract_platform(key):
-        # df = pd.DataFrame(response)
-        # df = df[df.columns].add_prefix('old_')
-        # return df
-        return ['ok']
+    def extract_platform(config):
+        try:
+            response = requests.get(config['url'], auth=HTTPBasicAuth(config['user'],config['password']), verify=config['verify'],timeout=config['timeout'])
+            response = response.text
+            response = json.loads(response)
+            try:
+                for x in config['route_trunk'].split("-"):
+                    if x.isnumeric():
+                        response=response[int(x)]
+                    else:
+                        response=response[x]
+            except:
+                print("ERROR IN route_trunk")
+            # response = pd.DataFrame(response) 
+            # response = response[response.columns].add_prefix('platform_')
+                response = []
+
+        except requests.exceptions.RequestException as e:
+            response = []
+            print("ERROR IN GET DATA PLATFORM")
+        
+        return response
 
     @task()
     def extract_mongo(key):
@@ -97,11 +114,12 @@ def puller():
 
 
     @task()
-    def comparate_old_vs_new():
+    def comparate_old_vs_new(data_platform,data_old):
+        # df_plat_vs_old = dataframe_difference(pd.DataFrame(df_plat['concat_key_generate']),pd.DataFrame(df_old['concat_key_generate']))
         # df = pd.DataFrame(response)
         # df = df[df.columns].add_prefix('old_')
         # return df
-        return ['ok']
+        return ['compare ok']
 
     # [END extract]
 
@@ -161,9 +179,9 @@ def puller():
     ]
     key_process = str(config[0]["platform_id"])+"-"+str(config[0]["platform_name"])
 
-    platform_data = extract_platform(key_process)
+    platform_data = extract_platform(config)
     old_data = extract_old(key_process)
-    old_vs_new = comparate_old_vs_new()
+    old_vs_new = comparate_old_vs_new(platform_data,old_data)
     mongo_data = extract_mongo(key_process)
     mysql_data = extract_mysql(key_process)
 
