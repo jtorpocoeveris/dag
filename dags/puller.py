@@ -5,6 +5,8 @@
 import json
 from airflow.decorators import dag, task
 from airflow.utils.dates import days_ago
+from airflow.models.baseoperator import cross_downstream
+from airflow.operators.dummy import DummyOperator
 import redis
 import requests
 from requests.auth import HTTPBasicAuth
@@ -48,7 +50,12 @@ def puller():
         # df = df[df.columns].add_prefix('old_')
         # return df
         return response
-
+    @task()
+    def extract_platform(key):
+        # df = pd.DataFrame(response)
+        # df = df[df.columns].add_prefix('old_')
+        # return df
+        return ['ok']
     # [END extract]
 
     # [START load]
@@ -106,13 +113,16 @@ def puller():
       }
     ]
     key_process = str(config[0]["platform_id"])+"-"+str(config[0]["platform_name"])
-    order_data = extract_old(key_process)
-    load(order_data)
+    old_data = extract_old(key_process)
+    platform_data = extract_platform(key_process)
+    # load(order_data,platform_data)
+    old_data >> platform_data
     # [END main_flow]
 
 
 # [START dag_invocation]
 puller = puller()
+# task4 = DummyOperator(task_id='extract_platform', trigger_rule=TriggerRule.ALL_DONE)
 # [END dag_invocation]
 
 # [END tutorial]
