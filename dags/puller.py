@@ -139,20 +139,20 @@ def puller():
       }
     ]
     key_process = str(config[0]["platform_id"])+"-"+str(config[0]["platform_name"])
+
+    latest_only = LatestOnlyOperator(task_id='extract_platform')
+
+
     platform_data = extract_platform(key_process)
     old_data = extract_old(key_process)
     mongo_data = extract_mongo(key_process)
     mysql_data = extract_mysql(key_process)
     comparate_old_vs_new = comparate_old_vs_new()
-
-
-    latest_only = DummyOperator(task_id='extract_platform')
-    task1 = DummyOperator(task_id='extract_old')
-    task2 = DummyOperator(task_id='extract_mongo')
-    task3 = DummyOperator(task_id='extract_mysql')
-    task4 = DummyOperator(task_id='comparate_old_vs_new')
-    latest_only >> task1 >> [task3, task4]
-    task2 >> [task3, task4]
+    
+    # load(order_data,platform_data)
+    [platform_data,old_data] >> comparate_old_vs_new
+    mongo_data
+    mysql_data
     # [END main_flow]
 
 
