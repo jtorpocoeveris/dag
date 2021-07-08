@@ -1,0 +1,5 @@
+pymongo
+redis
+pandas
+mysqlclient
+xmltodict
