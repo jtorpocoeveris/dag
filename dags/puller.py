@@ -2,6 +2,7 @@
 # pylint: disable=missing-function-docstring
 # [START]
 # [START import_module]
+get_ipython().system('pip3  install pymongo pandas redis boto3')
 import redis
 import json
 import requests
