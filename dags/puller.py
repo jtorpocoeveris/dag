@@ -37,7 +37,7 @@ def puller():
     from pandas.io.json import json_normalize
     # import pymongo
     # from pymongo import MongoClient
-    from bson.json_util import dumps,loads
+    # from bson.json_util import dumps,loads
     from functools import reduce
     from datetime import datetime,timedelta
     from sqlalchemy import create_engine,text
