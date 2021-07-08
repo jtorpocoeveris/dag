@@ -266,20 +266,20 @@ def puller_idirect():
         },
         "secondary_join_cols": {
           "mysql": [
-            "mysql_siteId",
-            "mysql_id_nms"
+            "siteId",
+            ""
           ],
           "mongo": [
             "mongo_Name",
             "mongo_ID"
           ],
           "platform": [
-            "platform_Name",
-            "platform_ID"
+            "Name",
+            "ID"
           ],
           "old": [
-            "old_Name",
-            "old_ID"
+            "Name",
+            "ID"
           ]
         },
         "platform_name": "idirect_lima"
