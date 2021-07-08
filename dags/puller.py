@@ -214,7 +214,7 @@ def puller_idirect():
             indicator="_merge_",
             how='outer'
         )
-        return {'platform_data':data_platform,'comparation':comparation}
+        return {'platform_data':data_platform,'comparation':comparation.to_json(orient='records')}
 
 
     @task()
