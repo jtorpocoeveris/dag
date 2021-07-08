@@ -269,6 +269,7 @@ def puller_idirect():
     # old_data = extract_old(key_process)
     # mysql_data = extract_mysql(engine,config)
     # mongo_data = extract_mongo(db_,config)
+    config = config[0]
     old_vs_new = comparate_old_vs_new( extract_platform(config)['data'],extract_old(key_process)['data'])
     # primary_vs_mysql = comparate_primary_mysql(old_vs_new['both'],mysql_data['data'],platform_data['data'])
     
