@@ -110,12 +110,13 @@ def puller_idirect():
         redis_cn = redis.Redis(host= '10.233.49.128',    port= '6379',    password="tmCN3FwkP7")
         response = redis_cn.get(key)
         response = json.loads(response)
-        df_old = pd.DataFrame(response)
+        # df_old = pd.DataFrame(response)
         # df_old = df_old[df_old.columns].add_prefix('old_')
-        df_old = generateConcatKey(df_old,[config['primary_join_cols']['old']])
+        # df_old = generateConcatKey(df_old,[config['primary_join_cols']['old']])
         # df_old = generateConcatKey(df_old,['old_'+config['primary_join_cols']['old']])
-        df_old = generateConcatKeySecondary(df_old,config['secondary_join_cols']['old'])
-        return {'data': df_old.to_json(orient='records'), 'status':200}
+        # df_old = generateConcatKeySecondary(df_old,config['secondary_join_cols']['old'])
+        return {'data': response, 'status':200}
+        # return {'data': df_old.to_json(orient='records'), 'status':200}
 
 
 
@@ -133,12 +134,12 @@ def puller_idirect():
                     else:
                         response=response[x]
 
-                response =  pd.DataFrame(response) 
+                # response =  pd.DataFrame(response) 
                 # response = response[response.columns].add_prefix('platform_')
-                response = generateConcatKey(response,[config['primary_join_cols']['platform']])
+                # response = generateConcatKey(response,[config['primary_join_cols']['platform']])
                 # response = generateConcatKey(response,['platform_'+config['primary_join_cols']['platform']])
-                response = generateConcatKeySecondary(response,config['secondary_join_cols']['platform'])
-                response = response.to_json(orient='records')
+                # response = generateConcatKeySecondary(response,config['secondary_join_cols']['platform'])
+                # response = response.to_json(orient='records')
             except:
                 print("ERROR IN route_trunk")
             # response = pd.DataFrame(response) 
@@ -211,7 +212,6 @@ def puller_idirect():
         comparison_df = df1.merge(
             df2,
             indicator="_merge_",
-            on="concat_key_generate",
             how='outer'
         )
         return {'platform_data':data_platform,'both':comparison_df[comparison_df['_merge_']=='both'].to_json(orient='records'),'left':comparison_df[comparison_df['_merge_']=='left_only'].to_json(orient='records'),'right':comparison_df[comparison_df['_merge_']=='right_only'].to_json(orient='records')}
