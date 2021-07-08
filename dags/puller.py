@@ -144,16 +144,14 @@ def puller():
     old_data = extract_old(key_process)
     mongo_data = extract_mongo(key_process)
     mysql_data = extract_mysql(key_process)
-    comparate_old_vs_new = comparate_old_vs_new()
+    old_vs_new = comparate_old_vs_new()
     
 
     plat = DummyOperator(task_id="platform_data")
     old = DummyOperator(task_id="old_data")
     mongo = DummyOperator(task_id="mongo_data")
     mysql = DummyOperator(task_id="mysql_data")
-    plat_old = DummyOperator(task_id="comparate_old_vs_new")
-
-
+    plat_old = DummyOperator(task_id="old_vs_new")
     # load(order_data,platform_data)
     [plat,old] >> plat_old
     mongo
@@ -163,7 +161,6 @@ def puller():
 
 # [START dag_invocation]
 puller = puller()
-# task4 = DummyOperator(task_id='extract_platform', trigger_rule=TriggerRule.ALL_DONE)
 # [END dag_invocation]
 
 # [END tutorial]
