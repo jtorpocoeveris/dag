@@ -273,7 +273,7 @@ def puller_idirect():
     
     platform_data
     mysql_data
-    old_vs_new << old_data
+    old_vs_new
     # primary_vs_mysql
     # [END main_flow]
 
