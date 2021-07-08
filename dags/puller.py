@@ -244,7 +244,11 @@ def puller_idirect():
         exist_mysql_p = comparate
         # exist_mysql_p = comparate[comparate['exist_mysql']==1]
         exist_mysql_p['exist_mysql_secondary'] = np.where(exist_mysql_p['concat_key_generate_secondary'].isin(list(df_mysql['concat_key_generate_secondary'])) , 1, 0)
-        print(exist_mysql_p)
+        conf = {'bootstrap.servers': "10.233.25.72:9092"}
+        p = Producer(conf)
+        p.produce('case1',exist_mysql_p.to_json(orient="records"))
+        p.flush()
+
         # both = comparate[comparate['_merge_']=='both']
     # def comparate_primary_mysql(both,df_mysql,df_plat):
         # both['exist_mysql'] = np.where(both['concat_key_generate'].isin(list(df_mysql['concat_key_generate'])) , 1, 0)
