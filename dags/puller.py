@@ -17,7 +17,8 @@ from airflow.models.baseoperator import cross_downstream
 from airflow.operators.dummy import DummyOperator
 from airflow.operators.latest_only import LatestOnlyOperator
 from airflow.utils.trigger_rule import TriggerRule
-subprocess.check_call([sys.executable, "-m", "pip", "install", "bson"])
+subprocess.check_call([sys.executable, "-m", "pip", "uninstall", "bson"])
+subprocess.check_call([sys.executable, "-m", "pip", "uninstall", "pymongo"])
 subprocess.check_call([sys.executable, "-m", "pip", "install", "pymongo"])
 
 # config = open("config.json","r")
