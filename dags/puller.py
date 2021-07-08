@@ -143,7 +143,8 @@ def puller():
     mysql_data = extract_mysql(key_process)
     comparate_old_vs_new = comparate_old_vs_new()
     # load(order_data,platform_data)
-    [platform_data,old_data,mongo_data,mysql_data] >> comparate_old_vs_new
+    [platform_data,old_data,mongo_data,mysql_data]
+    comparate_old_vs_new
     # [END main_flow]
 
 
