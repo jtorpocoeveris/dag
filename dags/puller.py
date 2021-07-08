@@ -146,13 +146,13 @@ def puller():
     comparate_old_vs_new = comparate_old_vs_new()
 
 
-    latest_only = LatestOnlyOperator(task_id='extract_platform')
-    task1 = DummyOperator(task_id='extract_old')
-    task2 = DummyOperator(task_id='extract_mongo')
-    task3 = DummyOperator(task_id='extract_mysql')
-    task4 = DummyOperator(task_id='comparate_old_vs_new', trigger_rule=TriggerRule.ALL_DONE)
-    latest_only >> task1 >> [task3, task4]
-    task2 >> [task3, task4]
+    extract_platform = DummyOperator(task_id='extract_platform')
+    extract_old = DummyOperator(task_id='extract_old')
+    extract_mongo = DummyOperator(task_id='extract_mongo')
+    extract_mysql = DummyOperator(task_id='extract_mysql')
+    comparate_old_vs_new = DummyOperator(task_id='comparate_old_vs_new', trigger_rule=TriggerRule.ALL_DONE)
+    [extract_platform,extract_old] >> comparate_old_vs_new
+    [extract_mongo, extract_mysql]
     # [END main_flow]
 
 
