@@ -144,6 +144,8 @@ def puller_idirect():
     @task()
     def extract_mongo(db_,config):
       df_datamongo = []
+      return {'data': df_datamongo, 'status':200}
+
     #     coltn_mdb = db_[config['mongo_collection']]
         
     #     if config['mongo_limit_time']:
@@ -165,7 +167,7 @@ def puller_idirect():
     #     df_datamongo[df_datamongo_origin.columns] = df_datamongo_origin
     #     del df_datamongo[config['mongo_normalization']]
     #     df_datamongo = df_datamongo[df_datamongo.columns].add_prefix('mongo_')
-        return {'data': df_datamongo, 'status':200}
+      # return {'data': df_datamongo, 'status':200}
 
 
 
