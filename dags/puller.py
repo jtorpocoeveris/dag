@@ -219,7 +219,7 @@ def puller_idirect():
         """
 
         print(data)
-
+        return ['ok']
     # [END load]
     # [START main_flow]
     
