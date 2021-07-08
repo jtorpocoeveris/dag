@@ -298,7 +298,7 @@ def puller_idirect():
     # platform_data
     platform_data >> old_data >> comparate_old_vs_new(platform_data,old_data) 
     # old_vs_new
-    old_vs_new >> comparate_primary_mysql(old_vs_new['both'], extract_mysql(engine,config)['data'],old_vs_new['platform_data'])
+    # old_vs_new >> comparate_primary_mysql(old_vs_new['both'], extract_mysql(engine,config)['data'],old_vs_new['platform_data'])
     # primary_vs_mysql
     # [END main_flow]
 
