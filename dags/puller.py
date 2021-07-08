@@ -270,9 +270,6 @@ def puller_idirect():
     mongo_data = extract_mongo(db_,config)
     mysql_data = extract_mysql(engine,config)
     primary_vs_mysql = comparate_primary_mysql(old_vs_new['both'],mysql_data['data'],platform_data['data'])
-
-    # mysql_data
-    # mongo_data
     platform_data >> old_vs_new << old_data
     old_vs_new >> primary_vs_mysql << mysql_data
     # [END main_flow]
