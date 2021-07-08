@@ -17,6 +17,18 @@ from airflow.models.baseoperator import cross_downstream
 from airflow.operators.dummy import DummyOperator
 from airflow.operators.latest_only import LatestOnlyOperator
 from airflow.utils.trigger_rule import TriggerRule
+from requests.auth import HTTPBasicAuth
+import pandas as pd
+from pandas.io.json import json_normalize
+# subprocess.check_call([sys.executable, "-m", "pip", "install", "confluent_kafka"])
+# subprocess.check_call([sys.executable, "-m", "pip", "install", "kafka"])
+# import pymongo
+# from pymongo import MongoClient
+from functools import reduce
+from datetime import datetime,timedelta
+from sqlalchemy import create_engine,text
+import numpy as np
+from confluent_kafka import Producer
 # subprocess.check_call([sys.executable, "-m", "pip", "install", "bson"])
 # subprocess.check_call([sys.executable, "-m", "pip", "install", "pymongo"])
 
@@ -39,18 +51,7 @@ default_args = {
 @dag(default_args=default_args, schedule_interval=None, start_date=days_ago(2), tags=['idirect_lima'])
 def puller_idirect():
     # sys.path.insert(0,os.path.abspath(os.path.dirname(__file__)))
-    from requests.auth import HTTPBasicAuth
-    import pandas as pd
-    from pandas.io.json import json_normalize
-    # subprocess.check_call([sys.executable, "-m", "pip", "install", "confluent_kafka"])
-    # subprocess.check_call([sys.executable, "-m", "pip", "install", "kafka"])
-    # import pymongo
-    # from pymongo import MongoClient
-    from functools import reduce
-    from datetime import datetime,timedelta
-    from sqlalchemy import create_engine,text
-    import numpy as np
-    from confluent_kafka import Producer
+
     # import confluent_kafka
     # import kafka
     # from kafka.errors import KafkaError
@@ -264,15 +265,15 @@ def puller_idirect():
     ]
     key_process = str(config[0]["platform_id"])+"-"+str(config[0]["platform_name"])
 
-    platform_data = extract_platform(config)
-    old_data = extract_old(key_process)
-    mysql_data = extract_mysql(engine,config)
+    # platform_data = extract_platform(config)
+    # old_data = extract_old(key_process)
+    # mysql_data = extract_mysql(engine,config)
     # mongo_data = extract_mongo(db_,config)
-    old_vs_new = comparate_old_vs_new(platform_data['data'],old_data['data'])
+    old_vs_new = comparate_old_vs_new( extract_platform(config)['data'],extract_old(key_process)['data'])
     # primary_vs_mysql = comparate_primary_mysql(old_vs_new['both'],mysql_data['data'],platform_data['data'])
     
-    platform_data
-    mysql_data
+    # platform_data
+    # mysql_data
     old_vs_new
     # primary_vs_mysql
     # [END main_flow]
