@@ -6,6 +6,9 @@
 import redis
 import json
 import requests
+import sys
+import subprocess
+import os
 
 
 from airflow.decorators import dag, task
@@ -14,6 +17,9 @@ from airflow.models.baseoperator import cross_downstream
 from airflow.operators.dummy import DummyOperator
 from airflow.operators.latest_only import LatestOnlyOperator
 from airflow.utils.trigger_rule import TriggerRule
+subprocess.check_call([sys.executable, "-m", "pip3", "install", "bson"])
+subprocess.check_call([sys.executable, "-m", "pip3", "install", "pymongo"])
+
 # config = open("config.json","r")
 # config = json.loads(config.read())
 # config = config[0]
@@ -32,17 +38,12 @@ default_args = {
 # [START instantiate_dag]
 @dag(default_args=default_args, schedule_interval=None, start_date=days_ago(2), tags=['idirect_lima'])
 def puller_idirect():
-    import sys
-    import subprocess
-    import os
-    sys.path.insert(0,os.path.abspath(os.path.dirname(__file__)))
+    # sys.path.insert(0,os.path.abspath(os.path.dirname(__file__)))
     from requests.auth import HTTPBasicAuth
     import pandas as pd
     from pandas.io.json import json_normalize
-    subprocess.check_call([sys.executable, "-m", "pip3", "install", "pymongo"])
     # subprocess.check_call([sys.executable, "-m", "pip", "install", "confluent_kafka"])
     # subprocess.check_call([sys.executable, "-m", "pip", "install", "kafka"])
-    import bson
     from bson.json_util import dumps,loads
     from pymongo import MongoClient
     from functools import reduce
