@@ -1,1 +1,2 @@
 import confluent_kafka
+from confluent_kafka import Producer
