@@ -187,7 +187,7 @@ def puller_idirect():
 
     @task()
     def comparate_old_vs_new(data_platform,data_old):
-        return ['ok']
+        return {'platform_data':data_platform,'both':data_platform}
         # comparison_df = df1.merge(
         #     df2,
         #     indicator="_merge_",
@@ -273,8 +273,9 @@ def puller_idirect():
     # primary_vs_mysql = comparate_primary_mysql(old_vs_new['both'],mysql_data['data'],platform_data['data'])
     
     # platform_data
-    comparate_old_vs_new(extract_platform(config)['data'],extract_old(key_process)['data']) 
+    old_vs_new = comparate_old_vs_new(extract_platform(config)['data'],extract_old(key_process)['data']) 
     # old_vs_new
+    comparate_primary_mysql(old_vs_new['both'], extract_mysql(engine,config)['data'],old_vs_new['platform_data'])
     # primary_vs_mysql
     # [END main_flow]
 
