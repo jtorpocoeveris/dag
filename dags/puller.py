@@ -39,7 +39,7 @@ def puller_idirect():
     from requests.auth import HTTPBasicAuth
     import pandas as pd
     from pandas.io.json import json_normalize
-    subprocess.check_call([sys.executable, "-m", "pip", "pymongo", package])
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "pymongo"])
     from pymongo import MongoClient
     #from bson.json_util import dumps,loads
     from functools import reduce
