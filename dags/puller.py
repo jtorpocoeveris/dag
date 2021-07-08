@@ -41,9 +41,8 @@ def puller_idirect():
     from pandas.io.json import json_normalize
     # subprocess.check_call([sys.executable, "-m", "pip", "install", "pymongo"])
     # subprocess.check_call([sys.executable, "-m", "pip", "install", "confluent_kafka"])
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "kafka"])
+    # subprocess.check_call([sys.executable, "-m", "pip", "install", "kafka"])
     from pymongo import MongoClient
-    #from bson.json_util import dumps,loads
     from functools import reduce
     from datetime import datetime,timedelta
     from sqlalchemy import create_engine,text
