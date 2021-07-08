@@ -2,9 +2,7 @@
 # pylint: disable=missing-function-docstring
 # [START]
 # [START import_module]
-import sys
-import os
-sys.path.insert(0,os.path.abspath(os.path.dirname(__file__)))
+
 import redis
 import json
 import requests
@@ -34,7 +32,9 @@ default_args = {
 # [START instantiate_dag]
 @dag(default_args=default_args, schedule_interval=None, start_date=days_ago(2), tags=['idirect_lima'])
 def puller_idirect():
-
+    import sys
+    import os
+    sys.path.insert(0,os.path.abspath(os.path.dirname(__file__)))
     from requests.auth import HTTPBasicAuth
     import pandas as pd
     from pandas.io.json import json_normalize
@@ -48,8 +48,8 @@ def puller_idirect():
     # import confluent_kafka
     #import kafka
     #from kafka.errors import KafkaError
-    # uri = "mongodb://bifrostProdUser:Maniac321.@cluster0-shard-00-00.bvdlk.mongodb.net:27017,cluster0-shard-00-01.bvdlk.mongodb.net:27017,cluster0-shard-00-02.bvdlk.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-nn38a4-shard-0&authSource=admin&retryWrites=true&w=majority"
-    # conection = MongoClient(uri)
+    uri = "mongodb://bifrostProdUser:Maniac321.@cluster0-shard-00-00.bvdlk.mongodb.net:27017,cluster0-shard-00-01.bvdlk.mongodb.net:27017,cluster0-shard-00-02.bvdlk.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-nn38a4-shard-0&authSource=admin&retryWrites=true&w=majority"
+    conection = MongoClient(uri)
     db_ = []
 
     # config = open("config.json","r")
