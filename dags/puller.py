@@ -207,7 +207,7 @@ def puller_idirect():
         comparison_df = df1.merge(
             df2,
             indicator="_merge_",
-            on="concat_key_generate"
+            on="concat_key_generate",
             how='outer'
         )
         return {'platform_data':data_platform,'both':comparison_df[comparison_df['_merge_']=='both'].to_json(orient='records'),'left':comparison_df[comparison_df['_merge_']=='left_only'].to_json(orient='records'),'right':comparison_df[comparison_df['_merge_']=='right_only'].to_json(orient='records')}
