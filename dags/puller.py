@@ -110,12 +110,12 @@ def puller_idirect():
         redis_cn = redis.Redis(host= '10.233.49.128',    port= '6379',    password="tmCN3FwkP7")
         response = redis_cn.get(key)
         response = json.loads(response)
-        # df_old = pd.DataFrame(response)
-        # df_old = df_old[df_old.columns].add_prefix('old_')
+        df_old = pd.DataFrame(response)
+        df_old = df_old[df_old.columns].add_prefix('old_')
         # df_old = generateConcatKey(df_old,[config['primary_join_cols']['old']])
-        # df_old = generateConcatKey(df_old,['old_'+config['primary_join_cols']['old']])
-        # df_old = generateConcatKeySecondary(df_old,config['secondary_join_cols']['old'])
-        return response
+        df_old = generateConcatKey(df_old,['old_'+config['primary_join_cols']['old']])
+        df_old = generateConcatKeySecondary(df_old,config['secondary_join_cols']['old'])
+        return json.loads(df_old.to_json(orient='records'))
         # return {'data': df_old.to_json(orient='records'), 'status':200}
 
 
@@ -134,12 +134,13 @@ def puller_idirect():
                     else:
                         response=response[x]
 
-                # response =  pd.DataFrame(response) 
-                # response = response[response.columns].add_prefix('platform_')
+                response =  pd.DataFrame(response) 
+                response = response[response.columns].add_prefix('platform_')
                 # response = generateConcatKey(response,[config['primary_join_cols']['platform']])
-                # response = generateConcatKey(response,['platform_'+config['primary_join_cols']['platform']])
-                # response = generateConcatKeySecondary(response,config['secondary_join_cols']['platform'])
-                # response = response.to_json(orient='records')
+                response = generateConcatKey(response,['platform_'+config['primary_join_cols']['platform']])
+                response = generateConcatKeySecondary(response,config['secondary_join_cols']['platform'])
+                response = response.to_json(orient='records')
+                response = json.loads(response)
             except:
                 print("ERROR IN route_trunk")
             # response = pd.DataFrame(response) 
@@ -275,12 +276,12 @@ def puller_idirect():
             "mongo_ID"
           ],
           "platform": [
-            "Name",
-            "ID"
+            "platform_Name",
+            "platform_ID"
           ],
           "old": [
-            "Name",
-            "ID"
+            "old_Name",
+            "old_ID"
           ]
         },
         "platform_name": "idirect_lima"
