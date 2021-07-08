@@ -263,19 +263,19 @@ def puller_idirect():
         "platform_name": "idirect_lima"
       }
     ]
-    key_process = str(config[0]["platform_id"])+"-"+str(config[0]["platform_name"])
-
-    # platform_data = extract_platform(config)
-    # old_data = extract_old(key_process)
+    config = config[0]
+    key_process = str(config["platform_id"])+"-"+str(config["platform_name"])
+    platform_data = extract_platform(config)
+    old_data = extract_old(key_process)
     # mysql_data = extract_mysql(engine,config)
     # mongo_data = extract_mongo(db_,config)
-    config = config[0]
-    old_vs_new = comparate_old_vs_new( extract_platform(config)['data'],extract_old(key_process)['data'])
+    # old_vs_new = comparate_old_vs_new( extract_platform(config)['data'],extract_old(key_process)['data'])
     # primary_vs_mysql = comparate_primary_mysql(old_vs_new['both'],mysql_data['data'],platform_data['data'])
     
-    # platform_data
+    platform_data
+    old_data
     # mysql_data
-    old_vs_new
+    # old_vs_new
     # primary_vs_mysql
     # [END main_flow]
 
