@@ -50,6 +50,7 @@ def puller_idirect():
     from datetime import datetime,timedelta
     from sqlalchemy import create_engine,text
     import numpy as np
+    from confluent_kafka import Producer
     # import confluent_kafka
     # import kafka
     # from kafka.errors import KafkaError
