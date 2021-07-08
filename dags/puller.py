@@ -2,16 +2,37 @@
 # pylint: disable=missing-function-docstring
 # [START]
 # [START import_module]
+import redis
 import json
+import requests
+from requests.auth import HTTPBasicAuth
+import pandas as pd
+from pandas.io.json import json_normalize
+from pymongo import MongoClient
+from bson.json_util import dumps,loads
+from functools import reduce
+from datetime import datetime,timedelta
+from sqlalchemy import create_engine,text
+import numpy as np
+
+uri = "mongodb://bifrostProdUser:Maniac321.@cluster0-shard-00-00.bvdlk.mongodb.net:27017,cluster0-shard-00-01.bvdlk.mongodb.net:27017,cluster0-shard-00-02.bvdlk.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-nn38a4-shard-0&authSource=admin&retryWrites=true&w=majority"
+conection = MongoClient(uri)
+db_ = conection["bifrost"]
+
+# config = open("config.json","r")
+# config = json.loads(config.read())
+# config = config[0]
+
+
+engine = create_engine("mysql://admin:Maniac321.@bifrosttiws-instance-1.cn4dord7rrni.us-west-2.rds.amazonaws.com/bifrostprod10dev?charset=utf8", connect_args={'connect_timeout':120})
+engine_puller = create_engine("mysql://testuser:testpassword@192.168.36.21:6033/puller?charset=utf8", connect_args={'connect_timeout': 120})
+
+
+
 from airflow.decorators import dag, task
 from airflow.utils.dates import days_ago
 from airflow.models.baseoperator import cross_downstream
 from airflow.operators.dummy import DummyOperator
-import redis
-import requests
-from requests.auth import HTTPBasicAuth
-import pandas as pd
-
 from airflow.operators.latest_only import LatestOnlyOperator
 from airflow.utils.trigger_rule import TriggerRule
 # config = open("config.json","r")
