@@ -132,7 +132,7 @@ def puller():
     mongo_data = extract_old(key_process)
     mysql_data = extract_old(key_process)
     # load(order_data,platform_data)
-    platform_data >> [old_data,mongo_data] >> mysql_data
+    platform_data >> [old_data,mongo_data,mysql_data]
     # [END main_flow]
 
 
