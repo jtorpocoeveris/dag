@@ -44,7 +44,7 @@ def puller_idirect():
     from pandas.io.json import json_normalize
     # subprocess.check_call([sys.executable, "-m", "pip", "install", "confluent_kafka"])
     # subprocess.check_call([sys.executable, "-m", "pip", "install", "kafka"])
-    import pymongo
+    # import pymongo
     # from pymongo import MongoClient
     from functools import reduce
     from datetime import datetime,timedelta
@@ -53,9 +53,10 @@ def puller_idirect():
     import confluent_kafka
     import kafka
     from kafka.errors import KafkaError
-    uri = "mongodb://bifrostProdUser:Maniac321.@cluster0-shard-00-00.bvdlk.mongodb.net:27017,cluster0-shard-00-01.bvdlk.mongodb.net:27017,cluster0-shard-00-02.bvdlk.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-nn38a4-shard-0&authSource=admin&retryWrites=true&w=majority"
-    conection = MongoClient(uri)
-    db_ = conection["bifrost"]
+    # uri = "mongodb://bifrostProdUser:Maniac321.@cluster0-shard-00-00.bvdlk.mongodb.net:27017,cluster0-shard-00-01.bvdlk.mongodb.net:27017,cluster0-shard-00-02.bvdlk.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-nn38a4-shard-0&authSource=admin&retryWrites=true&w=majority"
+    # conection = MongoClient(uri)
+    db_ = []
+    # db_ = conection["bifrost"]
 
     # config = open("config.json","r")
     # config = json.loads(config.read())
@@ -142,27 +143,28 @@ def puller_idirect():
 
     @task()
     def extract_mongo(db_,config):
-        coltn_mdb = db_[config['mongo_collection']]
+      df_datamongo = []
+    #     coltn_mdb = db_[config['mongo_collection']]
         
-        if config['mongo_limit_time']:
-            now_day = datetime.now() 
-            day_generate = now_day 
-            day_generate = day_generate  - timedelta(minutes=50) 
-    #         day_generate = day_generate  - timedelta(minutes=config['mongo_limit_time']) 
-            data_mongo = coltn_mdb.find({'platform':config['platform_id']})
-    #         data_mongo = coltn_mdb.find({'timeP':{'$gte':day_generate.strftime("%Y-%m-%d %H:%M:%S")},'platform':config['platform_id']})
-        else:
-            data_mongo = coltn_mdb.find({'platform':config['platform_id']})
-        list_cur = list(data_mongo)
-        if len(list_cur)==0:
-            return pd.DataFrame()
-        json_data = dumps(list_cur, indent = 2)
-        df_datamongo = pd.DataFrame(loads(json_data))
-        df_datamongo_origin = pd.DataFrame(loads(json_data))
-        df_datamongo = df_datamongo[config['mongo_normalization']].apply(pd.Series)
-        df_datamongo[df_datamongo_origin.columns] = df_datamongo_origin
-        del df_datamongo[config['mongo_normalization']]
-        df_datamongo = df_datamongo[df_datamongo.columns].add_prefix('mongo_')
+    #     if config['mongo_limit_time']:
+    #         now_day = datetime.now() 
+    #         day_generate = now_day 
+    #         day_generate = day_generate  - timedelta(minutes=50) 
+    # #         day_generate = day_generate  - timedelta(minutes=config['mongo_limit_time']) 
+    #         data_mongo = coltn_mdb.find({'platform':config['platform_id']})
+    # #         data_mongo = coltn_mdb.find({'timeP':{'$gte':day_generate.strftime("%Y-%m-%d %H:%M:%S")},'platform':config['platform_id']})
+    #     else:
+    #         data_mongo = coltn_mdb.find({'platform':config['platform_id']})
+    #     list_cur = list(data_mongo)
+    #     if len(list_cur)==0:
+    #         return pd.DataFrame()
+    #     json_data = dumps(list_cur, indent = 2)
+    #     df_datamongo = pd.DataFrame(loads(json_data))
+    #     df_datamongo_origin = pd.DataFrame(loads(json_data))
+    #     df_datamongo = df_datamongo[config['mongo_normalization']].apply(pd.Series)
+    #     df_datamongo[df_datamongo_origin.columns] = df_datamongo_origin
+    #     del df_datamongo[config['mongo_normalization']]
+    #     df_datamongo = df_datamongo[df_datamongo.columns].add_prefix('mongo_')
         return {'data': df_datamongo, 'status':200}
 
 
