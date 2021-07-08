@@ -211,6 +211,9 @@ def puller_idirect():
     @task()
     def comparate_primary_mysql(both,df_mysql,df_plat):
         print("compara con mysql primary")
+        both = pd.DataFrame(both)
+        df_mysql = pd.DataFrame(df_mysql)
+        df_plat = pd.DataFrame(df_plat)
         both['exist_mysql'] = np.where(both['concat_key_generate'].isin(list(df_mysql['concat_key_generate'])) , 1, 0)
         not_exist_mysql_p = both[both['exist_mysql']==0]
         sendQueque('insert','mysql',not_exist_mysql_p)
@@ -285,7 +288,7 @@ def puller_idirect():
     # primary_vs_mysql = comparate_primary_mysql(old_vs_new['both'],mysql_data['data'],platform_data['data'])
     
     # platform_data
-    old_vs_new = comparate_old_vs_new(extract_platform(config)['data'],extract_old(key_process)['data']) 
+    old_vs_new = comparate_old_vs_new(extract_platform(config)['data'],extract_old(key_process,config)['data']) 
     # old_vs_new
     comparate_primary_mysql(old_vs_new['both'], extract_mysql(engine,config)['data'],old_vs_new['platform_data'])
     # primary_vs_mysql
