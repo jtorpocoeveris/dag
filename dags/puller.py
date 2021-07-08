@@ -106,13 +106,15 @@ def puller_idirect():
             
     # [START extract]
     @task()
-    def extract_old(key):
+    def extract_old(key,config):
         redis_cn = redis.Redis(host= '10.233.49.128',    port= '6379',    password="tmCN3FwkP7")
         response = redis_cn.get(key)
         response = json.loads(response)
-        # df = pd.DataFrame(response)
-        # df = df[df.columns].add_prefix('old_')
-        return {'data': response, 'status':200}
+        df_old = pd.DataFrame(response)
+        df_old = df[df.columns].add_prefix('old_')
+        df_old = generateConcatKey(df_old,['old_'+config['primary_join_cols']['old']])
+        df_old = generateConcatKeySecondary(df_old,config['secondary_join_cols']['old'])
+        return {'data': df_old.to_json(orient='records'), 'status':200}
 
 
 
@@ -129,6 +131,12 @@ def puller_idirect():
                         response=response[int(x)]
                     else:
                         response=response[x]
+
+                response =  pd.DataFrame(response) 
+                response = response[response.columns].add_prefix('platform_')
+                response = generateConcatKey(response,['platform_'+config['primary_join_cols']['old']])
+                response = generateConcatKeySecondary(response,config['secondary_join_cols']['old'])
+                response = response.to_json(orient='records')
             except:
                 print("ERROR IN route_trunk")
             # response = pd.DataFrame(response) 
@@ -179,6 +187,9 @@ def puller_idirect():
         query = "SELECT  * FROM "+str(config['mysql_table'])+" where status = 1 and  platformId = "+str(config['platform_id'])
         df_mysql_total = pd.read_sql_query(query, engine)
         df_mysql_total = df_mysql_total[df_mysql_total.columns].add_prefix('mysql_')
+        df_mysql_total = generateConcatKey(df_mysql_total,['mysql_'+config['primary_join_cols']['mysql']])
+        df_mysql_total = generateConcatKeySecondary(df_mysql_total,config['secondary_join_cols']['mysql'])
+        df_mysql_total = df_mysql_total.to_json(orient='records')
         return {'data': df_mysql_total, 'status':200}
 
 
@@ -206,7 +217,7 @@ def puller_idirect():
         ############
         exist_mysql_p = both[both['exist_mysql']==1]
         exist_mysql_p = df_plat[df_plat['concat_key_generate'].isin(list(exist_mysql_p['concat_key_generate']))]
-        return {'exist':exist_mysql_p,'not_exist':not_exist_mysql_p}
+        return {'exist':exist_mysql_p.to_json(orient='records'),'not_exist':not_exist_mysql_p.to_json(orient='records')}
 
 
     # [END extract]
