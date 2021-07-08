@@ -50,9 +50,9 @@ def puller_idirect():
     from datetime import datetime,timedelta
     from sqlalchemy import create_engine,text
     import numpy as np
-    import confluent_kafka
-    import kafka
-    from kafka.errors import KafkaError
+    # import confluent_kafka
+    # import kafka
+    # from kafka.errors import KafkaError
     # uri = "mongodb://bifrostProdUser:Maniac321.@cluster0-shard-00-00.bvdlk.mongodb.net:27017,cluster0-shard-00-01.bvdlk.mongodb.net:27017,cluster0-shard-00-02.bvdlk.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-nn38a4-shard-0&authSource=admin&retryWrites=true&w=majority"
     # conection = MongoClient(uri)
     db_ = []
