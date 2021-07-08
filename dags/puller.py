@@ -196,7 +196,7 @@ def puller_idirect():
         df_mysql_total = generateConcatKey(df_mysql_total,['mysql_'+config['primary_join_cols']['mysql']])
         df_mysql_total = generateConcatKeySecondary(df_mysql_total,config['secondary_join_cols']['mysql'])
         df_mysql_total = df_mysql_total.to_json(orient='records')
-        return {'data': json.loads(df_mysql_total), 'status':200}
+        return df_mysql_total
 
 
 
