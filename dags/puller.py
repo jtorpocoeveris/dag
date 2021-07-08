@@ -18,7 +18,7 @@ from airflow.operators.dummy import DummyOperator
 from airflow.operators.latest_only import LatestOnlyOperator
 from airflow.utils.trigger_rule import TriggerRule
 # subprocess.check_call([sys.executable, "-m", "pip", "install", "bson"])
-subprocess.check_call([sys.executable, "-m", "pip", "install", "pymongo --upgrade"])
+# subprocess.check_call([sys.executable, "-m", "pip", "install", "pymongo"])
 
 # config = open("config.json","r")
 # config = json.loads(config.read())
