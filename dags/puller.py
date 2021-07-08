@@ -176,6 +176,18 @@ def puller():
         return {'both':comparison_df[comparison_df['_merge_']=='both'],'left':comparison_df[comparison_df['_merge_']=='left_only'],'right':comparison_df[comparison_df['_merge_']=='right_only']}
 
 
+    @task()
+    def comparate_primary_mysql(both,df_mysql,df_plat):
+        print("compara con mysql primary")
+        both['exist_mysql'] = np.where(both['concat_key_generate'].isin(list(df_mysql['concat_key_generate'])) , 1, 0)
+        not_exist_mysql_p = both[both['exist_mysql']==0]
+        sendQueque('insert','mysql',not_exist_mysql_p)
+        ############
+        exist_mysql_p = both[both['exist_mysql']==1]
+        exist_mysql_p = df_plat[df_plat['concat_key_generate'].isin(list(exist_mysql_p['concat_key_generate']))]
+        return {'exist':exist_mysql_p,'not_exist':not_exist_mysql_p}
+
+
     # [END extract]
 
     # [START load]
@@ -239,10 +251,12 @@ def puller():
     old_vs_new = comparate_old_vs_new(platform_data['data'],old_data['data'])
     mongo_data = extract_mongo(db_,config)
     mysql_data = extract_mysql(key_process)
+    primary_vs_mysql = comparate_primary_mysql(old_vs_new['both'],mysql_data['data'],platform_data['data'])
 
     [platform_data,old_data] >> old_vs_new
-    mongo_data
     mysql_data
+    primary_vs_mysql
+    mongo_data
     # [END main_flow]
 
 
