@@ -265,7 +265,7 @@ def puller_idirect():
     key_process = str(config[0]["platform_id"])+"-"+str(config[0]["platform_name"])
 
     platform_data = extract_platform(config)
-    # old_data = extract_old(key_process)
+    old_data = extract_old(key_process)
     mysql_data = extract_mysql(engine,config)
     # mongo_data = extract_mongo(db_,config)
     old_vs_new = comparate_old_vs_new(platform_data['data'],old_data['data'])
