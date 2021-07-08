@@ -110,9 +110,9 @@ def puller_idirect():
         redis_cn = redis.Redis(host= '10.233.49.128',    port= '6379',    password="tmCN3FwkP7")
         response = redis_cn.get(key)
         response = json.loads(response)
-        df = pd.DataFrame(response)
-        df = df[df.columns].add_prefix('old_')
-        return {'data': df, 'status':200}
+        # df = pd.DataFrame(response)
+        # df = df[df.columns].add_prefix('old_')
+        return {'data': response, 'status':200}
 
 
 
