@@ -272,7 +272,6 @@ def puller_idirect():
     # primary_vs_mysql = comparate_primary_mysql(old_vs_new['both'],mysql_data['data'],platform_data['data'])
     
     platform_data
-    old_data
     mysql_data
     old_vs_new << old_data
     # primary_vs_mysql
