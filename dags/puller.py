@@ -111,7 +111,7 @@ def puller_idirect():
         response = redis_cn.get(key)
         response = json.loads(response)
         df_old = pd.DataFrame(response)
-        df_old = df[df.columns].add_prefix('old_')
+        df_old = df_old[df_old.columns].add_prefix('old_')
         df_old = generateConcatKey(df_old,['old_'+config['primary_join_cols']['old']])
         df_old = generateConcatKeySecondary(df_old,config['secondary_join_cols']['old'])
         return {'data': df_old.to_json(orient='records'), 'status':200}
@@ -134,8 +134,8 @@ def puller_idirect():
 
                 response =  pd.DataFrame(response) 
                 response = response[response.columns].add_prefix('platform_')
-                response = generateConcatKey(response,['platform_'+config['primary_join_cols']['old']])
-                response = generateConcatKeySecondary(response,config['secondary_join_cols']['old'])
+                response = generateConcatKey(response,['platform_'+config['primary_join_cols']['platform']])
+                response = generateConcatKeySecondary(response,config['secondary_join_cols']['platform'])
                 response = response.to_json(orient='records')
             except:
                 print("ERROR IN route_trunk")
