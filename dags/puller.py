@@ -50,12 +50,26 @@ def puller():
         # df = df[df.columns].add_prefix('old_')
         # return df
         return response
+
     @task()
     def extract_platform(key):
         # df = pd.DataFrame(response)
         # df = df[df.columns].add_prefix('old_')
         # return df
         return ['ok']
+
+    def extract_mongo(key):
+        # df = pd.DataFrame(response)
+        # df = df[df.columns].add_prefix('old_')
+        # return df
+        return ['ok']
+
+    def extract_mysql(key):
+        # df = pd.DataFrame(response)
+        # df = df[df.columns].add_prefix('old_')
+        # return df
+        return ['ok']
+
     # [END extract]
 
     # [START load]
@@ -113,10 +127,12 @@ def puller():
       }
     ]
     key_process = str(config[0]["platform_id"])+"-"+str(config[0]["platform_name"])
-    old_data = extract_old(key_process)
     platform_data = extract_platform(key_process)
+    old_data = extract_old(key_process)
+    mongo_data = extract_old(key_process)
+    mysql_data = extract_old(key_process)
     # load(order_data,platform_data)
-    old_data >> platform_data
+    platform_data >> [old_data,mongo_data] >> mysql_data
     # [END main_flow]
 
 
