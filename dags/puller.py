@@ -274,8 +274,7 @@ def puller_idirect():
     # mysql_data
     mongo_data
     [platform_data,old_data] >> old_vs_new
-    # old_vs_new >> primary_vs_mysql 
-    # << mysql_data
+    old_vs_new >> primary_vs_mysql << mysql_data
     # [END main_flow]
 
 
