@@ -12,6 +12,8 @@ import requests
 from requests.auth import HTTPBasicAuth
 import pandas as pd
 
+from airflow.operators.latest_only import LatestOnlyOperator
+from airflow.utils.trigger_rule import TriggerRule
 # config = open("config.json","r")
 # config = json.loads(config.read())
 # config = config[0]
@@ -142,10 +144,15 @@ def puller():
     mongo_data = extract_mongo(key_process)
     mysql_data = extract_mysql(key_process)
     comparate_old_vs_new = comparate_old_vs_new()
-    # load(order_data,platform_data)
-    [platform_data,old_data] >> comparate_old_vs_new
-    mongo_data
-    mysql_data
+
+
+    latest_only = LatestOnlyOperator(task_id='extract_platform')
+    task1 = DummyOperator(task_id='extract_old')
+    task2 = DummyOperator(task_id='extract_mongo')
+    task3 = DummyOperator(task_id='extract_mysql')
+    task4 = DummyOperator(task_id='comparate_old_vs_new', trigger_rule=TriggerRule.ALL_DONE)
+    latest_only >> task1 >> [task3, task4]
+    task2 >> [task3, task4]
     # [END main_flow]
 
 
