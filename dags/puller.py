@@ -191,9 +191,9 @@ def puller_idirect():
     def extract_mysql(engine,config):
         query = "SELECT  * FROM "+str(config['mysql_table'])+" where status = 1 and  platformId = "+str(config['platform_id'])
         df_mysql_total = pd.read_sql_query(query, engine)
-        # df_mysql_total = df_mysql_total[df_mysql_total.columns].add_prefix('mysql_')
-        df_mysql_total = generateConcatKey(df_mysql_total,[config['primary_join_cols']['mysql']])
-        # df_mysql_total = generateConcatKey(df_mysql_total,['mysql_'+config['primary_join_cols']['mysql']])
+        df_mysql_total = df_mysql_total[df_mysql_total.columns].add_prefix('mysql_')
+        # df_mysql_total = generateConcatKey(df_mysql_total,[config['primary_join_cols']['mysql']])
+        df_mysql_total = generateConcatKey(df_mysql_total,['mysql_'+config['primary_join_cols']['mysql']])
         df_mysql_total = generateConcatKeySecondary(df_mysql_total,config['secondary_join_cols']['mysql'])
         df_mysql_total = df_mysql_total.to_json(orient='records')
         return {'data': df_mysql_total, 'status':200}
@@ -220,16 +220,19 @@ def puller_idirect():
 
 
     @task()
-    def comparate_primary_mysql(both,df_mysql,df_plat):
-        print("compara con mysql primary")
-        both = pd.DataFrame(both)
-        df_mysql = pd.DataFrame(df_mysql)
-        df_plat = pd.DataFrame(df_plat)
-        df_plat_vs_old = dataframe_difference(pd.DataFrame(df_plat['concat_key_generate']),pd.DataFrame(df_old['concat_key_generate']))
-        only_new = df_plat_vs_old['left']
-        only_old = df_plat_vs_old['right']
-        both = df_plat_vs_old['both']
-        return {'both':both.to_json(orient='records'),'left':only_new.to_json(orient='records'),'right':only_old.to_json(orient='records')}
+    def comparate_primary_mysql(df_mysql):
+    # def comparate_primary_mysql(both,df_mysql,df_plat):
+        
+        return ['OK']
+        # print("compara con mysql primary")
+        # both = pd.DataFrame(both)
+        # df_mysql = pd.DataFrame(df_mysql)
+        # df_plat = pd.DataFrame(df_plat)
+        # df_plat_vs_old = dataframe_difference(pd.DataFrame(df_plat['concat_key_generate']),pd.DataFrame(df_old['concat_key_generate']))
+        # only_new = df_plat_vs_old['left']
+        # only_old = df_plat_vs_old['right']
+        # both = df_plat_vs_old['both']
+        # return {'both':both.to_json(orient='records'),'left':only_new.to_json(orient='records'),'right':only_old.to_json(orient='records')}
 
 
     # [END extract]
@@ -293,13 +296,14 @@ def puller_idirect():
     platform_data = extract_platform(config)
     old_data = extract_old(key_process,config)
     comp = comparate_old_vs_new(platform_data,old_data)
-    # mysql_data = extract_mysql(engine,config)
+    mysql_data = extract_mysql(engine,config)
     # mongo_data = extract_mongo(db_,config)
     # old_vs_new = comparate_old_vs_new( extract_platform(config)['data'],extract_old(key_process)['data'])
-    # primary_vs_mysql = comparate_primary_mysql(old_vs_new['both'],mysql_data['data'],platform_data['data'])
+    primary_vs_mysql = comparate_primary_mysql(mysql_data)
     
     # platform_data
-    old_data >> platform_data >> comp  
+    old_data >> platform_data >> comp
+    comp >> primary_vs_mysql
     # old_vs_new
     # old_vs_new >> comparate_primary_mysql(old_vs_new['both'], extract_mysql(engine,config)['data'],old_vs_new['platform_data'])
     # primary_vs_mysql
