@@ -200,6 +200,8 @@ def puller_idirect():
     def comparate_old_vs_new(data_platform,data_old):
         df1 = pd.DataFrame(data_platform)
         df2 = pd.DataFrame(data_old)
+        df1 = pd.DataFrame(df1['concat_key_generate'])
+        df2 = pd.DataFrame(df2['concat_key_generate'])
         comparison_df = df1.merge(
             df2,
             indicator="_merge_",
