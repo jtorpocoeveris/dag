@@ -220,9 +220,12 @@ def puller_idirect():
 
 
     @task()
-    def comparate_primary_mysql(df_mysql):
+    def comparate_primary_mysql(df_mysql,comparate):
+        df_mysql = pd.DataFrame(json.loads(df_mysql))
+        comparate = pd.DataFrame(json.loads(comparate['comparation']))
+        both = comparate[comparate['_merge_']=='both']
     # def comparate_primary_mysql(both,df_mysql,df_plat):
-        
+        both['exist_mysql'] = np.where(both['concat_key_generate'].isin(list(df_mysql['concat_key_generate'])) , 1, 0)
         return ['OK']
         # print("compara con mysql primary")
         # both = pd.DataFrame(both)
@@ -300,7 +303,7 @@ def puller_idirect():
     mysql_data = extract_mysql(engine,config)
     # mongo_data = extract_mongo(db_,config)
     # old_vs_new = comparate_old_vs_new( extract_platform(config)['data'],extract_old(key_process)['data'])
-    primary_vs_mysql = comparate_primary_mysql(mysql_data)
+    primary_vs_mysql = comparate_primary_mysql(mysql_data,comp)
     
     # platform_data
     old_data >> platform_data >> comp
