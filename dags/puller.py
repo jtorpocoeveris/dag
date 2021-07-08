@@ -145,17 +145,10 @@ def puller():
     mongo_data = extract_mongo(key_process)
     mysql_data = extract_mysql(key_process)
     old_vs_new = comparate_old_vs_new()
-    
-
-    plat = DummyOperator(task_id="platform_data")
-    old = DummyOperator(task_id="old_data")
-    mongo = DummyOperator(task_id="mongo_data")
-    mysql = DummyOperator(task_id="mysql_data")
-    plat_old = DummyOperator(task_id="old_vs_new")
     # load(order_data,platform_data)
-    [plat,old] >> plat_old
-    mongo
-    mysql
+    platform_data >> old_data >> old_vs_new
+    mongo_data
+    mysql_data
     # [END main_flow]
 
 
