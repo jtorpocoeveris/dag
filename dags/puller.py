@@ -253,10 +253,9 @@ def puller():
     mysql_data = extract_mysql(key_process)
     primary_vs_mysql = comparate_primary_mysql(old_vs_new['both'],mysql_data['data'],platform_data['data'])
 
-    [platform_data,old_data] >> old_vs_new
     mysql_data
-    primary_vs_mysql
     mongo_data
+    [platform_data,old_data] >> old_vs_new >> primary_vs_mysql
     # [END main_flow]
 
 
