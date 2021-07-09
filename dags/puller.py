@@ -122,8 +122,8 @@ def puller_idirect():
     @task()
     def extract_mongo(coltn_mdb,key,config):
 
+        coltn_mdb = coltn_mdb[0]
         data_mongo = coltn_mdb.find({'platform':config['platform_id']})
-
         
         redis_cn = redis.Redis(host= '10.233.49.128',    port= '6379',    password="tmCN3FwkP7")
         response = redis_cn.get(key)
@@ -389,7 +389,8 @@ def puller_idirect():
     send_qq_delete_mongo= send_queque(comp,'delete_mongo') 
     mysql_data = extract_mysql(engine,config)
     key_process_mongo = key_process
-    mongo_data = extract_mongo(coltn_mdb,key_process_mongo,config)
+
+    mongo_data = extract_mongo([coltn_mdb],key_process_mongo,config)
     # old_vs_new = comparate_old_vs_new( extract_platform(config)['data'],extract_old(key_process)['data'])
     primary_vs_mysql = comparate_primary_mysql(mysql_data,comp)
     primary_vs_mongo = comparate_primary_mongo(mongo_data,comp)
