@@ -22,6 +22,7 @@ from requests.auth import HTTPBasicAuth
 import pandas as pd
 from pandas.io.json import json_normalize
 subprocess.check_call([sys.executable, "-m", "pip", "install", "confluent_kafka"])
+subprocess.check_call([sys.executable, "-m", "pip", "install", "tk"])
 # subprocess.check_call([sys.executable, "-m", "pip", "install", "kafka"])
 # import pymongo
 # from pymongo import MongoClient
