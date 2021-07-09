@@ -122,7 +122,7 @@ def puller_idirect():
     def send_queque(data,case):
         conf = {'bootstrap.servers': "10.233.25.72:9092"}
         p = Producer(conf)
-        p.produce(case,data))
+        p.produce(case,data)
         p.flush()
         return ['OK']
         # return {'data': df_old.to_json(orient='records'), 'status':200}
