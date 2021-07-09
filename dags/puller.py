@@ -59,8 +59,6 @@ def puller_idirect():
     uri = "mongodb://bifrostProdUser:Maniac321.@cluster0-shard-00-00.bvdlk.mongodb.net:27017,cluster0-shard-00-01.bvdlk.mongodb.net:27017,cluster0-shard-00-02.bvdlk.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-nn38a4-shard-0&authSource=admin&retryWrites=true&w=majority"
     conection = MongoClient(uri)
     # db_ = []
-    db_ = conection["bifrost"]
-    coltn_mdb = db_["idirect_test_lima"]
 
     # config = open("config.json","r")
     # config = json.loads(config.read())
@@ -121,9 +119,7 @@ def puller_idirect():
         # return {'data': df_old.to_json(orient='records'), 'status':200}
     @task()
     def extract_mongo(coltn_mdb,key,config):
-
-        coltn_mdb = coltn_mdb[0]
-        data_mongo = coltn_mdb.find({'platform':config['platform_id']})
+        print(coltn_mdb)
         
         redis_cn = redis.Redis(host= '10.233.49.128',    port= '6379',    password="tmCN3FwkP7")
         response = redis_cn.get(key)
@@ -379,6 +375,12 @@ def puller_idirect():
       }
     ]
     config = config[0]
+
+    db_ = conection["bifrost"]
+    coltn_mdb = db_["idirect_test_lima"]
+    data_mdb = coltn_mdb.find({'platform':2})
+
+
     key_process = str(config["platform_id"])+"-"+str(config["platform_name"])
     platform_data = extract_platform(config)
     old_data = extract_old(key_process,config)
@@ -389,8 +391,8 @@ def puller_idirect():
     send_qq_delete_mongo= send_queque(comp,'delete_mongo') 
     mysql_data = extract_mysql(engine,config)
     key_process_mongo = key_process
-
-    mongo_data = extract_mongo([coltn_mdb],key_process_mongo,config)
+    print(data_mdb)
+    mongo_data = extract_mongo('ok',key_process_mongo,config)
     # old_vs_new = comparate_old_vs_new( extract_platform(config)['data'],extract_old(key_process)['data'])
     primary_vs_mysql = comparate_primary_mysql(mysql_data,comp)
     primary_vs_mongo = comparate_primary_mongo(mongo_data,comp)
