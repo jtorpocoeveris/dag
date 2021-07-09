@@ -350,12 +350,12 @@ def puller_idirect():
     secondary_vs_mysql = comparate_secondary_mysql(mysql_data,primary_vs_mysql)
     send_qq= send_queque(secondary_vs_mysql,'insert_mysql') 
     # platform_data
-    mysql_data
-    old_data
-    platform_data
-    comp >> [send_qq_new_mysql,send_qq_new_mongo,send_qq_delete_mysql,send_qq_delete_mongo]
-    comp >> primary_vs_mysql >> send_qq_insert_vsmysql
-    primary_vs_mysql >> secondary_vs_mysql >> send_qq
+    mysql_data >> Label("Obteniendo data de Mysql") 
+    old_data >> Label("Obteniendo data de la imagen anterior")
+    platform_data >> Label("Obteniendo data de Plataforma")
+    comp >> Label("Enviando a las colas") >> [send_qq_new_mysql,send_qq_new_mongo,send_qq_delete_mysql,send_qq_delete_mongo]
+    comp >> Label("Comparando las primary key con Mysql")  >> primary_vs_mysql >> Label("Enviando a la cola para  insertar en Mysql")  >> send_qq_insert_vsmysql
+    primary_vs_mysql  >> Label("Comparando las secondary key con Mysql")  >> secondary_vs_mysql  >> Label("Enviando a la cola para actualizar las secondary key en Mysql")  >> send_qq
     # old_vs_new
     # old_vs_new >> comparate_primary_mysql(old_vs_new['both'], extract_mysql(engine,config)['data'],old_vs_new['platform_data'])
     # primary_vs_mysql
