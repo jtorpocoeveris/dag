@@ -118,6 +118,14 @@ def puller_idirect():
         return json.loads(df_old.to_json(orient='records'))
         # return {'data': df_old.to_json(orient='records'), 'status':200}
 
+    @task()
+    def send_queque(data,case):
+        conf = {'bootstrap.servers': "10.233.25.72:9092"}
+        p = Producer(conf)
+        p.produce(case,data))
+        p.flush()
+        return ['OK']
+        # return {'data': df_old.to_json(orient='records'), 'status':200}
 
 
 
@@ -244,10 +252,7 @@ def puller_idirect():
         exist_mysql_p = comparate
         # exist_mysql_p = comparate[comparate['exist_mysql']==1]
         exist_mysql_p['exist_mysql_secondary'] = np.where(exist_mysql_p['concat_key_generate_secondary'].isin(list(df_mysql['concat_key_generate_secondary'])) , 1, 0)
-        conf = {'bootstrap.servers': "10.233.25.72:9092"}
-        p = Producer(conf)
-        p.produce('case1',exist_mysql_p.to_json(orient="records"))
-        p.flush()
+
 
         # both = comparate[comparate['_merge_']=='both']
     # def comparate_primary_mysql(both,df_mysql,df_plat):
@@ -337,10 +342,10 @@ def puller_idirect():
     # old_vs_new = comparate_old_vs_new( extract_platform(config)['data'],extract_old(key_process)['data'])
     primary_vs_mysql = comparate_primary_mysql(mysql_data,comp)
     secondary_vs_mysql = comparate_secondary_mysql(mysql_data,primary_vs_mysql)
-    
+    send_qq= send_queque(secondary_vs_mysql,'case1') 
     # platform_data
     old_data >> platform_data >> comp
-    comp >> primary_vs_mysql >> secondary_vs_mysql
+    comp >> primary_vs_mysql >> secondary_vs_mysql >> send_qq
     # old_vs_new
     # old_vs_new >> comparate_primary_mysql(old_vs_new['both'], extract_mysql(engine,config)['data'],old_vs_new['platform_data'])
     # primary_vs_mysql
