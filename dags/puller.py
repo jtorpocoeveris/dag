@@ -148,10 +148,10 @@ def puller_idirect():
 
     @task()
     def send_queque(data,case):
-        # conf = {'bootstrap.servers': "10.233.25.72:9092"}
-        # p = Producer(conf)
-        # p.produce(case,data)
-        # p.flush()
+        conf = {'bootstrap.servers': "10.233.25.72:9092"}
+        p = Producer(conf)
+        p.produce(case,data)
+        p.flush()
         return ['OK']
         # return {'data': df_old.to_json(orient='records'), 'status':200}
 
@@ -397,24 +397,24 @@ def puller_idirect():
     platform_data = extract_platform(config)
     old_data = extract_old(key_process,config)
     comp = comparate_old_vs_new(platform_data,old_data)
-    send_qq_new_mysql= send_queque(comp,'insert_mysql') 
-    send_qq_new_mongo= send_queque(comp,'insert_mysql') 
-    send_qq_delete_mysql= send_queque(comp,'delete_mysql') 
-    send_qq_delete_mongo= send_queque(comp,'delete_mongo') 
+    send_qq_new_mysql= send_queque(comp,'insertmysql') 
+    send_qq_new_mongo= send_queque(comp,'insertmongo') 
+    send_qq_delete_mysql= send_queque(comp,'deletemysql') 
+    send_qq_delete_mongo= send_queque(comp,'deletemongo') 
     mysql_data = extract_mysql(engine,config)
     key_process_mongo = key_process
     mongo_data = extract_mongo(data_mdb,key_process_mongo,config)
     # old_vs_new = comparate_old_vs_new( extract_platform(config)['data'],extract_old(key_process)['data'])
     primary_vs_mysql = comparate_primary_mysql(mysql_data,comp)
     primary_vs_mongo = comparate_primary_mongo(mongo_data,comp)
-    send_qq_insert_vsmysql= send_queque(primary_vs_mysql,'insert_mysql') 
-    send_qq_insert_vsmongo= send_queque(primary_vs_mongo,'insert_mongo') 
+    send_qq_insert_vsmysql= send_queque(primary_vs_mysql,'insertmysql') 
+    send_qq_insert_vsmongo= send_queque(primary_vs_mongo,'insertmongo') 
     
     secondary_vs_mysql = comparate_secondary_mysql(mysql_data,primary_vs_mysql)
     secondary_vs_mongo = comparate_secondary_mongo(mongo_data,primary_vs_mongo)
-    send_qq= send_queque(secondary_vs_mysql,'update_mysql') 
-    send_qq_mongo= send_queque(secondary_vs_mongo,'update_mongo') 
-    send_qq_mongo_timep= send_queque(secondary_vs_mongo,'update_mongo_timep') 
+    send_qq= send_queque(secondary_vs_mysql,'updatemysql') 
+    send_qq_mongo= send_queque(secondary_vs_mongo,'updatemongo') 
+    send_qq_mongo_timep= send_queque(secondary_vs_mongo,'updatemongotimep') 
     # platform_data
     mysql_data
     old_data
