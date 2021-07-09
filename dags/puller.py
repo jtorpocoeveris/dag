@@ -49,16 +49,17 @@ default_args = {
 
 # [START instantiate_dag]
 @dag(default_args=default_args, schedule_interval='*/10 * * * *', start_date=datetime(2021, 7, 8, 0, 0), tags=['idirect_lima'])
+# @dag(default_args=default_args, schedule_interval='*/10 * * * *', start_date=datetime(2021, 7, 8, 0, 0), tags=['idirect_lima'])
 def puller_idirect():
     # sys.path.insert(0,os.path.abspath(os.path.dirname(__file__)))
 
     # import confluent_kafka
     # import kafka
     # from kafka.errors import KafkaError
-    # uri = "mongodb://bifrostProdUser:Maniac321.@cluster0-shard-00-00.bvdlk.mongodb.net:27017,cluster0-shard-00-01.bvdlk.mongodb.net:27017,cluster0-shard-00-02.bvdlk.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-nn38a4-shard-0&authSource=admin&retryWrites=true&w=majority"
-    # conection = MongoClient(uri)
-    db_ = []
-    # db_ = conection["bifrost"]
+    uri = "mongodb://bifrostProdUser:Maniac321.@cluster0-shard-00-00.bvdlk.mongodb.net:27017,cluster0-shard-00-01.bvdlk.mongodb.net:27017,cluster0-shard-00-02.bvdlk.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-nn38a4-shard-0&authSource=admin&retryWrites=true&w=majority"
+    conection = MongoClient(uri)
+    # db_ = []
+    db_ = conection["bifrost"]
 
     # config = open("config.json","r")
     # config = json.loads(config.read())
@@ -117,6 +118,20 @@ def puller_idirect():
         df_old = generateConcatKeySecondary(df_old,config['secondary_join_cols']['old'])
         return json.loads(df_old.to_json(orient='records'))
         # return {'data': df_old.to_json(orient='records'), 'status':200}
+    @task()
+    def extract_mongo(key,config):
+        redis_cn = redis.Redis(host= '10.233.49.128',    port= '6379',    password="tmCN3FwkP7")
+        response = redis_cn.get(key)
+        response = json.loads(response)
+        df_mongo = pd.DataFrame(response)
+        df_mongo = df_mongo[df_mongo.columns].add_prefix('mongo_')
+        # df_old = generateConcatKey(df_old,[config['primary_join_cols']['old']])
+        df_mongo = generateConcatKey(df_old,['mongo_'+config['primary_join_cols']['mongo']])
+        df_mongo = generateConcatKeySecondary(df_mongo,config['secondary_join_cols']['mongo'])
+        return json.loads(df_mongo.to_json(orient='records'))
+        # return {'data': df_old.to_json(orient='records'), 'status':200}
+
+
 
     @task()
     def send_queque(data,case):
@@ -164,10 +179,6 @@ def puller_idirect():
 
 
 
-    @task()
-    def extract_mongo(db_,config):
-      df_datamongo = []
-      return {'data': df_datamongo, 'status':200}
 
     #     coltn_mdb = db_[config['mongo_collection']]
         
@@ -238,6 +249,20 @@ def puller_idirect():
         exist_mysql_p = both[both['exist_mysql']==1]
         exist_mysql_p = platform_data[platform_data['concat_key_generate'].isin(list(exist_mysql_p['concat_key_generate']))]
         return exist_mysql_p.to_json(orient="records")
+    
+    @task()
+    def comparate_primary_mongo(df_mongo,comparate):
+        df_mongo = pd.DataFrame(json.loads(df_mongo))
+        platform_data = pd.DataFrame(comparate['platform_data'])
+        comparate = pd.DataFrame(json.loads(comparate['comparation']))
+        both = comparate[comparate['_merge_']=='both']
+    # def comparate_primary_mysql(both,df_mysql,df_plat):
+        both['exist_mongo'] = np.where(both['concat_key_generate'].isin(list(df_mysql['concat_key_generate'])) , 1, 0)
+        exist_mysql_p = both[both['exist_mongo']==1]
+        exist_mysql_p = platform_data[platform_data['concat_key_generate'].isin(list(exist_mysql_p['concat_key_generate']))]
+        return exist_mysql_p.to_json(orient="records")
+
+
 
 
 
@@ -258,6 +283,22 @@ def puller_idirect():
     # def comparate_primary_mysql(both,df_mysql,df_plat):
         # both['exist_mysql'] = np.where(both['concat_key_generate'].isin(list(df_mysql['concat_key_generate'])) , 1, 0)
         return exist_mysql_p.to_json(orient="records")
+        # return ['ok']
+
+    @task()
+    def comparate_secondary_mongo(df_mongo,comparate):
+        df_mongo = pd.DataFrame(json.loads(df_mongo))
+        comparate = pd.DataFrame(json.loads(comparate))
+        print(comparate)
+        exist_mongo_p = comparate
+        # exist_mysql_p = comparate[comparate['exist_mysql']==1]
+        exist_mongo_p['exist_mongo_secondary'] = np.where(exist_mysql_p['concat_key_generate_secondary'].isin(list(df_mysql['concat_key_generate_secondary'])) , 1, 0)
+
+
+        # both = comparate[comparate['_merge_']=='both']
+    # def comparate_primary_mysql(both,df_mysql,df_plat):
+        # both['exist_mysql'] = np.where(both['concat_key_generate'].isin(list(df_mysql['concat_key_generate'])) , 1, 0)
+        return exist_mongo_p.to_json(orient="records")
         # return ['ok']
 
 
@@ -342,20 +383,29 @@ def puller_idirect():
     send_qq_delete_mysql= send_queque(comp,'delete_mysql') 
     send_qq_delete_mongo= send_queque(comp,'delete_mongo') 
     mysql_data = extract_mysql(engine,config)
-    # mongo_data = extract_mongo(db_,config)
+    key_process_mongo = key_process
+    mongo_data = extract_mongo(key_process_mongo,config)
     # old_vs_new = comparate_old_vs_new( extract_platform(config)['data'],extract_old(key_process)['data'])
     primary_vs_mysql = comparate_primary_mysql(mysql_data,comp)
+    primary_vs_mongo = comparate_primary_mongo(mongo_data,comp)
     send_qq_insert_vsmysql= send_queque(primary_vs_mysql,'insert_mysql') 
+    send_qq_insert_vsmongo= send_queque(primary_vs_mongo,'insert_mongo') 
     
     secondary_vs_mysql = comparate_secondary_mysql(mysql_data,primary_vs_mysql)
+    secondary_vs_mongo = comparate_secondary_mongo(mongo_data,primary_vs_mongo)
     send_qq= send_queque(secondary_vs_mysql,'update_mysql') 
+    send_qq_mongo= send_queque(secondary_vs_mongo,'update_mongo') 
+    send_qq_mongo_timep= send_queque(secondary_vs_mongo,'update_mongo_timep') 
     # platform_data
     mysql_data
     old_data
     platform_data
+    mongo_data
     comp >> [send_qq_new_mysql,send_qq_new_mongo,send_qq_delete_mysql,send_qq_delete_mongo]
     comp >> primary_vs_mysql >> send_qq_insert_vsmysql
+    comp >> primary_vs_mongo >> send_qq_insert_vsmongo
     primary_vs_mysql >> secondary_vs_mysql >> send_qq
+    primary_vs_mongo >> secondary_vs_mongo >> [send_qq_mongo,send_qq_mongo_timep]
     # old_vs_new
     # old_vs_new >> comparate_primary_mysql(old_vs_new['both'], extract_mysql(engine,config)['data'],old_vs_new['platform_data'])
     # primary_vs_mysql
