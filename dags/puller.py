@@ -140,7 +140,8 @@ def puller_idirect():
         df_datamongo = df_datamongo[df_datamongo.columns].add_prefix('mongo_')
         df_datamongo = generateConcatKey(df_datamongo,['mongo_'+config['primary_join_cols']['mongo']])
         df_datamongo = generateConcatKeySecondary(df_datamongo,config['secondary_join_cols']['mongo'])
-        return df_datamongo.to_json(orient='records')
+        print("heree ennndd")
+        return json.loads(df_datamongo.to_json(orient='records'))
         # return {'data': df_old.to_json(orient='records'), 'status':200}
 
 
