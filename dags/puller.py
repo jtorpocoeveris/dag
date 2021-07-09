@@ -23,7 +23,7 @@ from pandas.io.json import json_normalize
 # subprocess.check_call([sys.executable, "-m", "pip", "install", "confluent_kafka"])
 # subprocess.check_call([sys.executable, "-m", "pip", "install", "apache-airflow-providers-mongo"])
 # subprocess.check_call([sys.executable, "-m", "pip", "install", "dnspython"])
-subprocess.check_call([sys.executable, "-m", "pip", "install", "pymongo"])
+# subprocess.check_call([sys.executable, "-m", "pip", "install", "pymongo"])
 # subprocess.check_call([sys.executable, "-m", "pip", "install", "kafka"])
 # import pymongo
 # from pymongo import MongoClient
