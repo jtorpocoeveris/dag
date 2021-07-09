@@ -29,8 +29,6 @@ from datetime import datetime,timedelta
 from sqlalchemy import create_engine,text
 import numpy as np
 from confluent_kafka import Producer
-from bson.json_util import dumps,loads
-
 # subprocess.check_call([sys.executable, "-m", "pip", "install", "bson"])
 # subprocess.check_call([sys.executable, "-m", "pip", "install", "pymongo"])
 
@@ -121,36 +119,17 @@ def puller_idirect():
         return json.loads(df_old.to_json(orient='records'))
         # return {'data': df_old.to_json(orient='records'), 'status':200}
     @task()
-    def extract_mongo(coltn_mdb,config):
-
-
-        if config['mongo_limit_time']:
-            now_day = datetime.now() 
-            day_generate = now_day 
-            day_generate = day_generate  - timedelta(minutes=config['mongo_limit_time']) 
-            data_mongo = coltn_mdb.find({'platform':config['platform_id']})
-            # data_mongo = coltn_mdb.find({'timeP':{'$gte':day_generate.strftime("%Y-%m-%d %H:%M:%S")},'platform':config['platform_id']})
-        else:
-            data_mongo = coltn_mdb.find({'platform':config['platform_id']})
-        list_cur = list(data_mongo)
-        json_data = dumps(list_cur, indent = 2)
-        df_datamongo = pd.DataFrame(loads(json_data))
-        df_datamongo_origin = pd.DataFrame(loads(json_data))
-        df_datamongo = df_datamongo[config['mongo_normalization']].apply(pd.Series)
-        df_datamongo[df_datamongo_origin.columns] = df_datamongo_origin
-        del df_datamongo[config['mongo_normalization']]
-
-
+    def extract_mongo(key,config):
         
-        # redis_cn = redis.Redis(host= '10.233.49.128',    port= '6379',    password="tmCN3FwkP7")
-        # response = redis_cn.get(key)
-        # response = json.loads(response)
-        # df_mongo = pd.DataFrame(response)
-        # df_mongo = df_mongo[df_mongo.columns].add_prefix('mongo_')
-        # # df_old = generateConcatKey(df_old,[config['primary_join_cols']['old']])
-        df_datamongo = generateConcatKey(df_datamongo,['mongo_'+config['primary_join_cols']['mongo']])
-        df_datamongo = generateConcatKeySecondary(df_datamongo,config['secondary_join_cols']['mongo'])
-        return json.loads(df_datamongo.to_json(orient='records'))
+        redis_cn = redis.Redis(host= '10.233.49.128',    port= '6379',    password="tmCN3FwkP7")
+        response = redis_cn.get(key)
+        response = json.loads(response)
+        df_mongo = pd.DataFrame(response)
+        df_mongo = df_mongo[df_mongo.columns].add_prefix('mongo_')
+        # df_old = generateConcatKey(df_old,[config['primary_join_cols']['old']])
+        df_mongo = generateConcatKey(df_old,['mongo_'+config['primary_join_cols']['mongo']])
+        df_mongo = generateConcatKeySecondary(df_mongo,config['secondary_join_cols']['mongo'])
+        return json.loads(df_mongo.to_json(orient='records'))
         # return {'data': df_old.to_json(orient='records'), 'status':200}
 
 
@@ -406,8 +385,7 @@ def puller_idirect():
     send_qq_delete_mongo= send_queque(comp,'delete_mongo') 
     mysql_data = extract_mysql(engine,config)
     key_process_mongo = key_process
-    coltn_mdb = db_[config['mongo_collection']]
-    mongo_data = extract_mongo(coltn_mdb,config)
+    mongo_data = extract_mongo(key_process_mongo,config)
     # old_vs_new = comparate_old_vs_new( extract_platform(config)['data'],extract_old(key_process)['data'])
     primary_vs_mysql = comparate_primary_mysql(mysql_data,comp)
     primary_vs_mongo = comparate_primary_mongo(mongo_data,comp)
