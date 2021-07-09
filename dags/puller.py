@@ -345,6 +345,8 @@ def puller_idirect():
     # mongo_data = extract_mongo(db_,config)
     # old_vs_new = comparate_old_vs_new( extract_platform(config)['data'],extract_old(key_process)['data'])
     primary_vs_mysql = comparate_primary_mysql(mysql_data,comp)
+    send_qq_insert_vsmysql= send_queque(primary_vs_mysql,'insert_mysql') 
+    
     secondary_vs_mysql = comparate_secondary_mysql(mysql_data,primary_vs_mysql)
     send_qq= send_queque(secondary_vs_mysql,'insert_mysql') 
     # platform_data
@@ -352,7 +354,7 @@ def puller_idirect():
     old_data
     platform_data
     comp >> [send_qq_new_mysql,send_qq_new_mongo,send_qq_delete_mysql,send_qq_delete_mongo]
-    comp >> primary_vs_mysql >> secondary_vs_mysql >> send_qq
+    comp >> primary_vs_mysql >> [send_qq_insert_vsmysql,secondary_vs_mysql] >> send_qq
     # old_vs_new
     # old_vs_new >> comparate_primary_mysql(old_vs_new['both'], extract_mysql(engine,config)['data'],old_vs_new['platform_data'])
     # primary_vs_mysql
