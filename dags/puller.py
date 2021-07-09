@@ -60,6 +60,7 @@ def puller_idirect():
     conection = MongoClient(uri)
     # db_ = []
     db_ = conection["bifrost"]
+    coltn_mdb = db_["idirect_test_lima"]
 
     # config = open("config.json","r")
     # config = json.loads(config.read())
@@ -120,6 +121,8 @@ def puller_idirect():
         # return {'data': df_old.to_json(orient='records'), 'status':200}
     @task()
     def extract_mongo(key,config):
+
+
         
         redis_cn = redis.Redis(host= '10.233.49.128',    port= '6379',    password="tmCN3FwkP7")
         response = redis_cn.get(key)
@@ -385,6 +388,26 @@ def puller_idirect():
     send_qq_delete_mongo= send_queque(comp,'delete_mongo') 
     mysql_data = extract_mysql(engine,config)
     key_process_mongo = key_process
+
+    
+            coltn_mdb = db_[config['mongo_collection']]
+    
+    # if config['mongo_limit_time']:
+    #     now_day = datetime.now() 
+    #     day_generate = now_day 
+    #     day_generate = day_generate  - timedelta(minutes=config['mongo_limit_time']) 
+    #     data_mongo = coltn_mdb.find({'timeP':{'$gte':day_generate.strftime("%Y-%m-%d %H:%M:%S")},'platform':config['platform_id']})
+    # else:
+    #     data_mongo = coltn_mdb.find({'platform':config['platform_id']})
+    # list_cur = list(data_mongo)
+    # json_data = dumps(list_cur, indent = 2)
+    # df_datamongo = pd.DataFrame(loads(json_data))
+    # df_datamongo_origin = pd.DataFrame(loads(json_data))
+    # df_datamongo = df_datamongo[config['mongo_normalization']].apply(pd.Series)
+    # df_datamongo[df_datamongo_origin.columns] = df_datamongo_origin
+    # del df_datamongo[config['mongo_normalization']]
+
+
     mongo_data = extract_mongo(key_process_mongo,config)
     # old_vs_new = comparate_old_vs_new( extract_platform(config)['data'],extract_old(key_process)['data'])
     primary_vs_mysql = comparate_primary_mysql(mysql_data,comp)
