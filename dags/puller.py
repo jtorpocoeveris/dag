@@ -338,7 +338,7 @@ def puller_idirect():
     old_data = extract_old(key_process,config)
     comp = comparate_old_vs_new(platform_data,old_data)
     send_qq_new_mysql= send_queque(comp,'insert_mysql') 
-    send_qq_new_mongol= send_queque(comp,'insert_mysql') 
+    send_qq_new_mongo= send_queque(comp,'insert_mysql') 
     send_qq_delete_mysql= send_queque(comp,'delete_mysql') 
     send_qq_delete_mongo= send_queque(comp,'delete_mongo') 
     mysql_data = extract_mysql(engine,config)
