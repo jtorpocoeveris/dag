@@ -372,14 +372,14 @@ def puller_idirect():
     mongo_data = extract_mongo(key_process_mongo,config)
     # old_vs_new = comparate_old_vs_new( extract_platform(config)['data'],extract_old(key_process)['data'])
     primary_vs_mysql = comparate_primary_mysql(mysql_data,comp)
-    primary_vs_mongo = comparate_primary_mysql(mongo_data,comp)
+    primary_vs_mongo = comparate_primary_mongo(mongo_data,comp)
     send_qq_insert_vsmysql= send_queque(primary_vs_mysql,'insert_mysql') 
     send_qq_insert_vsmongo= send_queque(primary_vs_mongo,'insert_mongo') 
     
     secondary_vs_mysql = comparate_secondary_mysql(mysql_data,primary_vs_mysql)
-    secondary_vs_mongo = comparate_secondary_mongo(mongo_data,primary_vs_mongo)
+    # secondary_vs_mongo = comparate_secondary_mongo(mongo_data,primary_vs_mongo)
     send_qq= send_queque(secondary_vs_mysql,'insert_mysql') 
-    send_qq_mongo= send_queque(secondary_vs_mongo,'insert_mongo') 
+    # send_qq_mongo= send_queque(secondary_vs_mongo,'insert_mongo') 
     # platform_data
     mysql_data
     old_data
@@ -389,7 +389,7 @@ def puller_idirect():
     comp >> primary_vs_mysql >> send_qq_insert_vsmysql
     comp >> primary_vs_mongo >> send_qq_insert_vsmongo
     primary_vs_mysql >> secondary_vs_mysql >> send_qq
-    primary_vs_mongo >> secondary_vs_mongo >> send_qq_mongo
+    # primary_vs_mongo >> secondary_vs_mongo >> send_qq_mongo
     # old_vs_new
     # old_vs_new >> comparate_primary_mysql(old_vs_new['both'], extract_mysql(engine,config)['data'],old_vs_new['platform_data'])
     # primary_vs_mysql
