@@ -23,7 +23,7 @@ from pandas.io.json import json_normalize
 # subprocess.check_call([sys.executable, "-m", "pip", "install", "confluent_kafka"])
 # subprocess.check_call([sys.executable, "-m", "pip", "install", "kafka"])
 # import pymongo
-# from pymongo import MongoClient
+from pymongo import MongoClient
 from functools import reduce
 from datetime import datetime,timedelta
 from sqlalchemy import create_engine,text
