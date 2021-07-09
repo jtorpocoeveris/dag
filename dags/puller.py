@@ -117,6 +117,20 @@ def puller_idirect():
         df_old = generateConcatKeySecondary(df_old,config['secondary_join_cols']['old'])
         return json.loads(df_old.to_json(orient='records'))
         # return {'data': df_old.to_json(orient='records'), 'status':200}
+    @task()
+    def extract_mongo(key,config):
+        redis_cn = redis.Redis(host= '10.233.49.128',    port= '6379',    password="tmCN3FwkP7")
+        response = redis_cn.get(key)
+        response = json.loads(response)
+        df_mongo = pd.DataFrame(response)
+        df_mongo = df_mongo[df_mongo.columns].add_prefix('mongo_')
+        # df_old = generateConcatKey(df_old,[config['primary_join_cols']['old']])
+        df_mongo = generateConcatKey(df_old,['mongo_'+config['primary_join_cols']['mongo']])
+        df_mongo = generateConcatKeySecondary(df_mongo,config['secondary_join_cols']['mongo'])
+        return json.loads(df_mongo.to_json(orient='records'))
+        # return {'data': df_old.to_json(orient='records'), 'status':200}
+
+
 
     @task()
     def send_queque(data,case):
@@ -164,10 +178,6 @@ def puller_idirect():
 
 
 
-    @task()
-    def extract_mongo(db_,config):
-      df_datamongo = []
-      return {'data': df_datamongo, 'status':200}
 
     #     coltn_mdb = db_[config['mongo_collection']]
         
@@ -342,10 +352,13 @@ def puller_idirect():
     send_qq_delete_mysql= send_queque(comp,'delete_mysql') 
     send_qq_delete_mongo= send_queque(comp,'delete_mongo') 
     mysql_data = extract_mysql(engine,config)
-    # mongo_data = extract_mongo(db_,config)
+    key_process_mongo = key_process
+    mongo_data = extract_mongo(key_process_mongo,config)
     # old_vs_new = comparate_old_vs_new( extract_platform(config)['data'],extract_old(key_process)['data'])
     primary_vs_mysql = comparate_primary_mysql(mysql_data,comp)
+    primary_vs_mongo = comparate_primary_mysql(mongo_data,comp)
     send_qq_insert_vsmysql= send_queque(primary_vs_mysql,'insert_mysql') 
+    send_qq_insert_vsmongo= send_queque(primary_vs_mongo,'insert_mongo') 
     
     secondary_vs_mysql = comparate_secondary_mysql(mysql_data,primary_vs_mysql)
     send_qq= send_queque(secondary_vs_mysql,'insert_mysql') 
@@ -355,6 +368,7 @@ def puller_idirect():
     platform_data
     comp >> [send_qq_new_mysql,send_qq_new_mongo,send_qq_delete_mysql,send_qq_delete_mongo]
     comp >> primary_vs_mysql >> send_qq_insert_vsmysql
+    comp >> primary_vs_mongo >> send_qq_insert_vsmongo
     primary_vs_mysql >> secondary_vs_mysql >> send_qq
     # old_vs_new
     # old_vs_new >> comparate_primary_mysql(old_vs_new['both'], extract_mysql(engine,config)['data'],old_vs_new['platform_data'])
