@@ -120,7 +120,6 @@ def puller_idirect():
         # return {'data': df_old.to_json(orient='records'), 'status':200}
     @task()
     def extract_mongo(data_mongo,key,config):
-        print(coltn_mdb)
             
         list_cur = list(data_mongo)
         if len(list_cur)==0:
