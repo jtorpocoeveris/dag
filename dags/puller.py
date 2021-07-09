@@ -136,11 +136,10 @@ def puller_idirect():
         df_datamongo = df_datamongo[config['mongo_normalization']].apply(pd.Series)
         df_datamongo[df_datamongo_origin.columns] = df_datamongo_origin
         del df_datamongo[config['mongo_normalization']]
-        
+        del df_datamongo['_id']
         df_datamongo = df_datamongo[df_datamongo.columns].add_prefix('mongo_')
         df_datamongo = generateConcatKey(df_datamongo,['mongo_'+config['primary_join_cols']['mongo']])
         df_datamongo = generateConcatKeySecondary(df_datamongo,config['secondary_join_cols']['mongo'])
-        del df_datamongo['_id']
         print("heree ennndd")
         return json.loads(df_datamongo.to_json(orient='records'))
         # return {'data': df_old.to_json(orient='records'), 'status':200}
