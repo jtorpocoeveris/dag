@@ -118,16 +118,20 @@ def puller_idirect():
         return json.loads(df_old.to_json(orient='records'))
         # return {'data': df_old.to_json(orient='records'), 'status':200}
     @task()
-    def extract_mongo(coltn_mdb,key,config):
+    def extract_mongo(data_mongo,key,config):
         print(coltn_mdb)
+            
+        list_cur = list(data_mongo)
+        if len(list_cur)==0:
+            return pd.DataFrame()
+        json_data = dumps(list_cur, indent = 2)
+        df_datamongo = pd.DataFrame(loads(json_data))
+        df_datamongo_origin = pd.DataFrame(loads(json_data))
+        df_datamongo = df_datamongo[config['mongo_normalization']].apply(pd.Series)
+        df_datamongo[df_datamongo_origin.columns] = df_datamongo_origin
+        del df_datamongo[config['mongo_normalization']]
         
-        redis_cn = redis.Redis(host= '10.233.49.128',    port= '6379',    password="tmCN3FwkP7")
-        response = redis_cn.get(key)
-        response = json.loads(response)
-        df_mongo = pd.DataFrame(response)
-        df_mongo = df_mongo[df_mongo.columns].add_prefix('mongo_')
-        # df_old = generateConcatKey(df_old,[config['primary_join_cols']['old']])
-        df_mongo = generateConcatKey(df_old,['mongo_'+config['primary_join_cols']['mongo']])
+        df_datamongo = df_datamongo[df_datamongo.columns].add_prefix('mongo_')
         df_mongo = generateConcatKeySecondary(df_mongo,config['secondary_join_cols']['mongo'])
         return json.loads(df_mongo.to_json(orient='records'))
         # return {'data': df_old.to_json(orient='records'), 'status':200}
