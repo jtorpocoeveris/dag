@@ -405,7 +405,7 @@ def puller_idirect():
     send_qq_delete_mongo= send_queque(comp,'delete_mongo') 
     mysql_data = extract_mysql(engine,config)
     key_process_mongo = key_process
-    mongo_data = extract_mongo(key_process_mongo,config)
+    mongo_data = extract_mongo(db_,config)
     # old_vs_new = comparate_old_vs_new( extract_platform(config)['data'],extract_old(key_process)['data'])
     primary_vs_mysql = comparate_primary_mysql(mysql_data,comp)
     primary_vs_mongo = comparate_primary_mongo(mongo_data,comp)
