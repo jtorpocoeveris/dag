@@ -120,10 +120,10 @@ def puller_idirect():
 
     @task()
     def send_queque(data,case):
-        conf = {'bootstrap.servers': "10.233.25.72:9092"}
-        p = Producer(conf)
-        p.produce(case,data)
-        p.flush()
+        # conf = {'bootstrap.servers': "10.233.25.72:9092"}
+        # p = Producer(conf)
+        # p.produce(case,data)
+        # p.flush()
         return ['OK']
         # return {'data': df_old.to_json(orient='records'), 'status':200}
 
@@ -337,15 +337,18 @@ def puller_idirect():
     platform_data = extract_platform(config)
     old_data = extract_old(key_process,config)
     comp = comparate_old_vs_new(platform_data,old_data)
+    send_qq_new= send_queque(comp,'insert_mysql') 
     mysql_data = extract_mysql(engine,config)
     # mongo_data = extract_mongo(db_,config)
     # old_vs_new = comparate_old_vs_new( extract_platform(config)['data'],extract_old(key_process)['data'])
     primary_vs_mysql = comparate_primary_mysql(mysql_data,comp)
     secondary_vs_mysql = comparate_secondary_mysql(mysql_data,primary_vs_mysql)
-    send_qq= send_queque(secondary_vs_mysql,'case1') 
+    send_qq= send_queque(secondary_vs_mysql,'insert_mysql') 
     # platform_data
     mysql_data
-    [old_data,platform_data] >> comp >> primary_vs_mysql >> secondary_vs_mysql >> send_qq
+    old_data
+    platform_data
+    comp >> [send_qq_new,primary_vs_mysql] >> secondary_vs_mysql >> send_qq
     # old_vs_new
     # old_vs_new >> comparate_primary_mysql(old_vs_new['both'], extract_mysql(engine,config)['data'],old_vs_new['platform_data'])
     # primary_vs_mysql
