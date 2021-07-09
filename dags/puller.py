@@ -300,7 +300,7 @@ def puller_idirect():
 
     @task()
     def comparate_secondary_mongo(df_mongo,comparate):
-        df_mongo = pd.DataFrame(json.loads(df_mongo))
+        df_mongo = pd.DataFrame(df_mongo)
         comparate = pd.DataFrame(json.loads(comparate))
         print(comparate)
         exist_mongo_p = comparate
