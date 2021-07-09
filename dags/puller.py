@@ -305,7 +305,7 @@ def puller_idirect():
         print(comparate)
         exist_mongo_p = comparate
         # exist_mysql_p = comparate[comparate['exist_mysql']==1]
-        exist_mongo_p['exist_mongo_secondary'] = np.where(exist_mysql_p['concat_key_generate_secondary'].isin(list(df_mysql['concat_key_generate_secondary'])) , 1, 0)
+        exist_mongo_p['exist_mongo_secondary'] = np.where(exist_mongo_p['concat_key_generate_secondary'].isin(list(df_mongo['concat_key_generate_secondary'])) , 1, 0)
 
 
         # both = comparate[comparate['_merge_']=='both']
