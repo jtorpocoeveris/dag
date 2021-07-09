@@ -265,7 +265,7 @@ def puller_idirect():
     
     @task()
     def comparate_primary_mongo(df_mongo,comparate):
-        df_mongo = pd.DataFrame(json.loads(df_mongo))
+        df_mongo = pd.DataFrame(df_mongo)
         platform_data = pd.DataFrame(comparate['platform_data'])
         comparate = pd.DataFrame(json.loads(comparate['comparation']))
         both = comparate[comparate['_merge_']=='both']
