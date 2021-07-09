@@ -124,7 +124,10 @@ def puller_idirect():
         list_cur = list(data_mongo)
         if len(list_cur)==0:
             return []
+        print("list cur")
+        print(list_cur)
         json_data = dumps(list_cur, indent = 2)
+        print(json_data)
         df_datamongo = pd.DataFrame(loads(json_data))
         df_datamongo_origin = pd.DataFrame(loads(json_data))
         df_datamongo = df_datamongo[config['mongo_normalization']].apply(pd.Series)
