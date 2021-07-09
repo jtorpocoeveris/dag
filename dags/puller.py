@@ -29,6 +29,8 @@ from datetime import datetime,timedelta
 from sqlalchemy import create_engine,text
 import numpy as np
 from confluent_kafka import Producer
+from bson.json_util import dumps,loads
+
 # subprocess.check_call([sys.executable, "-m", "pip", "install", "bson"])
 # subprocess.check_call([sys.executable, "-m", "pip", "install", "pymongo"])
 
