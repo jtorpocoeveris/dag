@@ -248,6 +248,20 @@ def puller_idirect():
         exist_mysql_p = both[both['exist_mysql']==1]
         exist_mysql_p = platform_data[platform_data['concat_key_generate'].isin(list(exist_mysql_p['concat_key_generate']))]
         return exist_mysql_p.to_json(orient="records")
+    
+    @task()
+    def comparate_primary_mongo(df_mongo,comparate):
+        df_mongo = pd.DataFrame(json.loads(df_mongo))
+        platform_data = pd.DataFrame(comparate['platform_data'])
+        comparate = pd.DataFrame(json.loads(comparate['comparation']))
+        both = comparate[comparate['_merge_']=='both']
+    # def comparate_primary_mysql(both,df_mysql,df_plat):
+        both['exist_mongo'] = np.where(both['concat_key_generate'].isin(list(df_mysql['concat_key_generate'])) , 1, 0)
+        exist_mysql_p = both[both['exist_mongo']==1]
+        exist_mysql_p = platform_data[platform_data['concat_key_generate'].isin(list(exist_mysql_p['concat_key_generate']))]
+        return exist_mysql_p.to_json(orient="records")
+
+
 
 
 
@@ -377,9 +391,9 @@ def puller_idirect():
     send_qq_insert_vsmongo= send_queque(primary_vs_mongo,'insert_mongo') 
     
     secondary_vs_mysql = comparate_secondary_mysql(mysql_data,primary_vs_mysql)
-    # secondary_vs_mongo = comparate_secondary_mongo(mongo_data,primary_vs_mongo)
+    secondary_vs_mongo = comparate_secondary_mongo(mongo_data,primary_vs_mongo)
     send_qq= send_queque(secondary_vs_mysql,'insert_mysql') 
-    # send_qq_mongo= send_queque(secondary_vs_mongo,'insert_mongo') 
+    send_qq_mongo= send_queque(secondary_vs_mongo,'insert_mongo') 
     # platform_data
     mysql_data
     old_data
