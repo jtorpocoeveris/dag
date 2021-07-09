@@ -10,7 +10,6 @@ import sys
 import subprocess
 import os
 
-from tkinter  import *
 
 from airflow.decorators import dag, task
 from airflow.utils.dates import days_ago
@@ -23,6 +22,7 @@ import pandas as pd
 from pandas.io.json import json_normalize
 subprocess.check_call([sys.executable, "-m", "pip", "install", "confluent_kafka"])
 subprocess.check_call([sys.executable, "-m", "pip", "install", "tk"])
+from tkinter  import *
 # subprocess.check_call([sys.executable, "-m", "pip", "install", "kafka"])
 # import pymongo
 # from pymongo import MongoClient
