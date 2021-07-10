@@ -266,23 +266,30 @@ def puller_idirect():
             indicator="_merge_",
             how='outer'
         )
-        print("------comparation")
+        print("------both")
         print(comparation)
-        print("------comparation")
-        return {'platform_data':data_platform,'comparation':comparation.to_json(orient="records")}
+        both = comparation[comparation['_merge_']=='both']
+        if both.empty:
+            both_send="empty"
+        else:
+            both_send=both.to_json(orient="records")
+        print("------both")
+
+        return {'platform_data':data_platform,'comparation':comparation.to_json(orient="records"),'both':both_send}
 
 
     @task()
     def comparate_primary_mysql(df_mysql,comparate):
         df_mysql = pd.DataFrame(json.loads(df_mysql))
         platform_data = pd.DataFrame(comparate['platform_data'])
-        comparate = pd.DataFrame(json.loads(comparate['comparation']))
-        both = comparate[comparate['_merge_']=='both']
+        comparate = pd.DataFrame(json.loads(comparate['both']))
+        both = comparate
     # def comparate_primary_mysql(both,df_mysql,df_plat):
         both['exist_mysql'] = np.where(both['concat_key_generate'].isin(list(df_mysql['concat_key_generate'])) , 1, 0)
         exist_mysql_p = both[both['exist_mysql']==1]
+        not_exist_mysql_p = both[both['exist_mysql']==0]
         exist_mysql_p = platform_data[platform_data['concat_key_generate'].isin(list(exist_mysql_p['concat_key_generate']))]
-        return exist_mysql_p.to_json(orient="records")
+        return {'exist_mysql':exist_mysql_p.to_json(orient="records"),'not_exist_mysql':not_exist_mysql_p.to_json(orient="records")}
     
     @task()
     def comparate_primary_mongo(df_mongo,comparate):
@@ -418,21 +425,21 @@ def puller_idirect():
     old_data = extract_old(key_process,config)
     comp = comparate_old_vs_new(platform_data,old_data)
     #OBTENER LOS BOTH EN EL KAFKA
-    send_qq_new_mysql= send_queque(comp['comparation'],'insertmysql') 
+    send_qq_new_mysql= send_queque(comp['both'],'insertmysql') 
     send_qq_new_mongo= send_queque(comp['comparation'],'insertmongo') 
     send_qq_delete_mysql= send_queque(comp['comparation'],'deletemysql') 
     send_qq_delete_mongo= send_queque(comp['comparation'],'deletemongo') 
     
     mysql_data = extract_mysql(engine,config)
-    primary_vs_mysql = comparate_primary_mysql(mysql_data,comp)
-    send_qq_insert_vsmysql= send_queque(primary_vs_mysql,'insertmysql') 
+    primary_vs_mysql = comparate_primary_mysql(mysql_data,comp['comparation'])
+    send_qq_insert_vsmysql= send_queque(primary_vs_mysql['not_exist_mysql'],'insertmysql') 
     
     key_process_mongo = key_process
     mongo_data = extract_mongo(data_mdb,key_process_mongo,config)
     primary_vs_mongo = comparate_primary_mongo(mongo_data,comp)
     send_qq_insert_vsmongo= send_queque(primary_vs_mongo,'insertmongo') 
   
-    secondary_vs_mysql = comparate_secondary_mysql(mysql_data,primary_vs_mysql)
+    secondary_vs_mysql = comparate_secondary_mysql(mysql_data,primary_vs_mysql['exist_mysql'])
     secondary_vs_mongo = comparate_secondary_mongo(mongo_data,primary_vs_mongo)
     send_qq= send_queque(secondary_vs_mysql,'updatemysql') 
     send_qq_mongo= send_queque(secondary_vs_mongo,'updatemongo') 
