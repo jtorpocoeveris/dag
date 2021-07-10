@@ -410,7 +410,7 @@ def puller_idirect():
     key_process = str(config["platform_id"])+"-"+str(config["platform_name"])
     platform_data = extract_platform(config)
     old_data = extract_old(key_process,config)
-    send_queque(json.dumps(old_data),'case1')
+    send_queque("xddddddd",'case1')
     comp = comparate_old_vs_new(platform_data,old_data)
     send_qq_new_mysql= send_queque(comp['comparation'],'insertmysql') 
     send_qq_new_mongo= send_queque(comp['comparation'],'insertmongo') 
