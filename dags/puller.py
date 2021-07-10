@@ -165,7 +165,7 @@ def puller_idirect():
         print("..........HERE...............")
         print(data)
         print("..........HERE...............")
-        p.produce(case,data)
+        p.produce(case,data[0])
         p.flush()
         return ['OK']
         # return {'data': df_old.to_json(orient='records'), 'status':200}
@@ -255,7 +255,7 @@ def puller_idirect():
     def comparate_old_vs_new(data_platform,data_old):
         df1 = pd.DataFrame(data_platform)
         print("data old ",data_old)
-        df2 = pd.DataFrame(json.loads(data_old))
+        df2 = pd.DataFrame(json.loads(data_old[0]))
         print(df1)
         print(df2)
         # df1 = pd.DataFrame(df1['concat_key_generate'])
