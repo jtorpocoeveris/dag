@@ -192,9 +192,6 @@ def puller_idirect():
                 response = generateConcatKeySecondary(response,config['secondary_join_cols']['platform'])
                 response = response.to_json(orient='records')
                 response = json.loads(response)
-                print("................... PLAT ...................")
-                print(response)
-                print("................... PLAT ...................")
             except:
                 print("ERROR IN route_trunk")
             # response = pd.DataFrame(response) 
@@ -205,7 +202,9 @@ def puller_idirect():
             response = {}
             print("ERROR IN GET DATA PLATFORM")
         # return response.to_json(orient='records')
+        print("response")
         print(response)
+        print("response")
         return response
 
 
