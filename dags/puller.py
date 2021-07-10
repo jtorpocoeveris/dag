@@ -165,7 +165,7 @@ def puller_idirect():
         print("..........HERE...............")
         print(data)
         print("..........HERE...............")
-        p.produce(case,data[0])
+        p.produce(case,data)
         p.flush()
         return ['OK']
         # return {'data': df_old.to_json(orient='records'), 'status':200}
