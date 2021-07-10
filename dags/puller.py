@@ -10,6 +10,8 @@ import sys
 import subprocess
 import os
 
+from airflow import DAG
+from airflow.operators.bash_operator import BashOperator
 
 from airflow.decorators import dag, task
 from airflow.models.baseoperator import cross_downstream
@@ -17,6 +19,8 @@ from airflow.operators.dummy import DummyOperator
 from airflow.operators.latest_only import LatestOnlyOperator
 from airflow.utils.dates import days_ago
 from airflow.utils.edgemodifier import Label
+
+
 from airflow.utils.trigger_rule import TriggerRule
 from requests.auth import HTTPBasicAuth
 import pandas as pd
