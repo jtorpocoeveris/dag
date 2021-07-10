@@ -70,7 +70,7 @@ default_args = {
 # [START instantiate_dag]
 @dag(default_args=default_args, schedule_interval=None, start_date=days_ago(2), tags=['idirect_lima'])
 # @dag(default_args=default_args, schedule_interval='*/10 * * * *', start_date=datetime(2021, 7, 8, 0, 0), tags=['idirect_lima'])
-def puller_idirect(db_):
+def puller_idirect(db_,engine):
     # sys.path.insert(0,os.path.abspath(os.path.dirname(__file__)))
 
     # import confluent_kafka
@@ -439,7 +439,7 @@ def puller_idirect(db_):
 
 
 # [START dag_invocation]
-puller_idirect = puller_idirect(db_)
+puller_idirect = puller_idirect(db_,engine)
 # [END dag_invocation]
 
 # [END tutorial]
