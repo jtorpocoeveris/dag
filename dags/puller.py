@@ -12,12 +12,12 @@ import os
 
 
 from airflow.decorators import dag, task
-from airflow.utils.dates import days_ago
 from airflow.models.baseoperator import cross_downstream
 from airflow.operators.dummy import DummyOperator
 from airflow.operators.latest_only import LatestOnlyOperator
-from airflow.utils.trigger_rule import TriggerRule
+from airflow.utils.dates import days_ago
 from airflow.utils.edgemodifier import Label
+from airflow.utils.trigger_rule import TriggerRule
 from requests.auth import HTTPBasicAuth
 import pandas as pd
 from pandas.io.json import json_normalize
