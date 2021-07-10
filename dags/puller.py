@@ -421,7 +421,7 @@ def puller_idirect():
     send_qq_mongo= send_queque(secondary_vs_mongo,'updatemongo') 
     send_qq_mongo_timep= send_queque(secondary_vs_mongo,'updatemongotimep') 
     # platform_data
-    mysql_data  >> Label("Envia data extraida para comparar")
+    mysql_data
     old_data
     platform_data
     mongo_data
