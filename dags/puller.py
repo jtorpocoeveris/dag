@@ -138,8 +138,6 @@ def puller_idirect():
             return []
 
         json_data = dumps(list_cur, indent = 2)
-        print("list cur")
-        print(list_cur)        # print(json_data)
         df_datamongo = pd.DataFrame(loads(json_data))
         df_datamongo_origin = pd.DataFrame(loads(json_data))
         # df_datamongo_origin = pd.DataFrame(json_data)
@@ -152,7 +150,6 @@ def puller_idirect():
         df_datamongo = df_datamongo[df_datamongo.columns].add_prefix('mongo_')
         df_datamongo = generateConcatKey(df_datamongo,['mongo_'+config['primary_join_cols']['mongo']])
         df_datamongo = generateConcatKeySecondary(df_datamongo,config['secondary_join_cols']['mongo'])
-        print("heree ennndd")
         return json.loads(df_datamongo.to_json(orient='records'))
         # return {'data': df_old.to_json(orient='records'), 'status':200}
 
@@ -162,9 +159,6 @@ def puller_idirect():
     def send_queque(data,case):
         conf = {'bootstrap.servers': "10.233.25.72:9092"}
         p = Producer(conf)
-        print("..........HERE...............")
-        print(data)
-        print("..........HERE...............")
         p.produce(case,data)
         p.flush()
         return ['OK']
@@ -202,9 +196,6 @@ def puller_idirect():
             response = {}
             print("ERROR IN GET DATA PLATFORM")
         # return response.to_json(orient='records')
-        print("response")
-        print(response)
-        print("response")
         return response
 
 
@@ -254,10 +245,7 @@ def puller_idirect():
     @task()
     def comparate_old_vs_new(data_platform,data_old):
         df1 = pd.DataFrame(data_platform)
-        print("data old ",data_old)
         df2 = pd.DataFrame(json.loads(data_old[0]))
-        print(df1)
-        print(df2)
         # df1 = pd.DataFrame(df1['concat_key_generate'])
         # df2 = pd.DataFrame(df2['concat_key_generate'])
         comparation = df1.merge(
@@ -326,7 +314,6 @@ def puller_idirect():
     def comparate_secondary_mysql(df_mysql,comparate):
         df_mysql = pd.DataFrame(json.loads(df_mysql))
         comparate = pd.DataFrame(json.loads(comparate))
-        print(comparate)
         exist_mysql_p = comparate
         # exist_mysql_p = comparate[comparate['exist_mysql']==1]
         exist_mysql_p['exist_mysql_secondary'] = np.where(exist_mysql_p['concat_key_generate_secondary'].isin(list(df_mysql['concat_key_generate_secondary'])) , 1, 0)
@@ -342,7 +329,6 @@ def puller_idirect():
     def comparate_secondary_mongo(df_mongo,comparate):
         df_mongo = pd.DataFrame(df_mongo)
         comparate = pd.DataFrame(json.loads(comparate))
-        print(comparate)
         exist_mongo_p = comparate
         # exist_mysql_p = comparate[comparate['exist_mysql']==1]
         exist_mongo_p['exist_mongo_secondary'] = np.where(exist_mongo_p['concat_key_generate_secondary'].isin(list(df_mongo['concat_key_generate_secondary'])) , 1, 0)
@@ -380,7 +366,6 @@ def puller_idirect():
         instead of saving it to end user review, just prints it out.
         """
 
-        print(data)
         return ['ok']
     # [END load]
     # [START main_flow]
