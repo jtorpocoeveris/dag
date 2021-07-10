@@ -254,7 +254,8 @@ def puller_idirect():
     @task()
     def comparate_old_vs_new(data_platform,data_old):
         df1 = pd.DataFrame(data_platform)
-        df2 = pd.DataFrame(data_old)
+        print("data old ",data_old)
+        df2 = pd.DataFrame(json.loads(data_old))
         print(df1)
         print(df2)
         # df1 = pd.DataFrame(df1['concat_key_generate'])
@@ -413,7 +414,7 @@ def puller_idirect():
     platform_data = extract_platform(config)
     old_data = extract_old(key_process,config)
     send_queque(old_data,'case1')
-    comp = comparate_old_vs_new(platform_data,json.loads(old_data[0]))
+    comp = comparate_old_vs_new(platform_data,old_data)
     send_qq_new_mysql= send_queque(comp['comparation'],'insertmysql') 
     send_qq_new_mongo= send_queque(comp['comparation'],'insertmongo') 
     send_qq_delete_mysql= send_queque(comp['comparation'],'deletemysql') 
