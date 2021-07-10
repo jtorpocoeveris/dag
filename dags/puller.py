@@ -37,6 +37,14 @@ import numpy as np
 from confluent_kafka import Producer
 # subprocess.check_call([sys.executable, "-m", "pip", "install", "bson"])
 # subprocess.check_call([sys.executable, "-m", "pip", "install", "pymongo"])
+uri = "mongodb://bifrostProdUser:Maniac321.@cluster0-shard-00-00.bvdlk.mongodb.net:27017,cluster0-shard-00-01.bvdlk.mongodb.net:27017,cluster0-shard-00-02.bvdlk.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-nn38a4-shard-0&authSource=admin&retryWrites=true&w=majority"
+conection = MongoClient(uri)
+# db_ = []
+# config = open("config.json","r")
+# config = json.loads(config.read())
+# config = config[0]
+engine = create_engine("mysql://admin:Maniac321.@bifrosttiws-instance-1.cn4dord7rrni.us-west-2.rds.amazonaws.com/bifrostprod10dev?charset=utf8", connect_args={'connect_timeout':120})
+engine_puller = create_engine("mysql://testuser:testpassword@192.168.36.21:6033/puller?charset=utf8", connect_args={'connect_timeout': 120})
 
 # config = open("config.json","r")
 # config = json.loads(config.read())
@@ -48,7 +56,13 @@ from confluent_kafka import Producer
 # These args will get passed on to each operator
 # You can override them on a per-task basis during operator initialization
 default_args = {
-    'owner': 'airflow'
+    'owner': 'airflow',
+    'depends_on_past': True,
+    # 'start_date': yesterday_at_elevenpm,
+    # 'email': ['tech.team@industrydive.com'],
+    # 'email_on_failure': True,
+    # 'email_on_retry': True,
+    'retries': 3
 }
 # [END default_args]
 # start_date=days_ago(2)
@@ -56,23 +70,12 @@ default_args = {
 # [START instantiate_dag]
 @dag(default_args=default_args, schedule_interval=None, start_date=days_ago(2), tags=['idirect_lima'])
 # @dag(default_args=default_args, schedule_interval='*/10 * * * *', start_date=datetime(2021, 7, 8, 0, 0), tags=['idirect_lima'])
-def puller_idirect():
+def puller_idirect(db_):
     # sys.path.insert(0,os.path.abspath(os.path.dirname(__file__)))
 
     # import confluent_kafka
     # import kafka
     # from kafka.errors import KafkaError
-    uri = "mongodb://bifrostProdUser:Maniac321.@cluster0-shard-00-00.bvdlk.mongodb.net:27017,cluster0-shard-00-01.bvdlk.mongodb.net:27017,cluster0-shard-00-02.bvdlk.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-nn38a4-shard-0&authSource=admin&retryWrites=true&w=majority"
-    conection = MongoClient(uri)
-    # db_ = []
-
-    # config = open("config.json","r")
-    # config = json.loads(config.read())
-    # config = config[0]
-
-
-    engine = create_engine("mysql://admin:Maniac321.@bifrosttiws-instance-1.cn4dord7rrni.us-west-2.rds.amazonaws.com/bifrostprod10dev?charset=utf8", connect_args={'connect_timeout':120})
-    engine_puller = create_engine("mysql://testuser:testpassword@192.168.36.21:6033/puller?charset=utf8", connect_args={'connect_timeout': 120})
 
 
     """
@@ -406,6 +409,7 @@ def puller_idirect():
     send_qq_new_mongo= send_queque(comp['comparation'],'insertmongo') 
     send_qq_delete_mysql= send_queque(comp['comparation'],'deletemysql') 
     send_qq_delete_mongo= send_queque(comp['comparation'],'deletemongo') 
+    
     mysql_data = extract_mysql(engine,config)
     primary_vs_mysql = comparate_primary_mysql(mysql_data,comp)
     send_qq_insert_vsmysql= send_queque(primary_vs_mysql,'insertmysql') 
@@ -435,7 +439,7 @@ def puller_idirect():
 
 
 # [START dag_invocation]
-puller_idirect = puller_idirect()
+puller_idirect = puller_idirect(db_)
 # [END dag_invocation]
 
 # [END tutorial]
