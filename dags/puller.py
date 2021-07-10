@@ -160,10 +160,13 @@ def puller_idirect():
 
     @task()
     def send_queque(data,case):
-        conf = {'bootstrap.servers': "10.233.25.72:9092"}
-        p = Producer(conf)
-        p.produce(case,data)
-        p.flush()
+        # conf = {'bootstrap.servers': "10.233.25.72:9092"}
+        # p = Producer(conf)
+        print(".........................")
+        print(data)
+        print(".........................")
+        # p.produce(case,data)
+        # p.flush()
         return ['OK']
         # return {'data': df_old.to_json(orient='records'), 'status':200}
 
