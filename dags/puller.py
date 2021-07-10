@@ -37,15 +37,6 @@ import numpy as np
 from confluent_kafka import Producer
 # subprocess.check_call([sys.executable, "-m", "pip", "install", "bson"])
 # subprocess.check_call([sys.executable, "-m", "pip", "install", "pymongo"])
-uri = "mongodb://bifrostProdUser:Maniac321.@cluster0-shard-00-00.bvdlk.mongodb.net:27017,cluster0-shard-00-01.bvdlk.mongodb.net:27017,cluster0-shard-00-02.bvdlk.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-nn38a4-shard-0&authSource=admin&retryWrites=true&w=majority"
-conection = MongoClient(uri)
-# db_ = []
-# config = open("config.json","r")
-# config = json.loads(config.read())
-# config = config[0]
-engine = create_engine("mysql://admin:Maniac321.@bifrosttiws-instance-1.cn4dord7rrni.us-west-2.rds.amazonaws.com/bifrostprod10dev?charset=utf8", connect_args={'connect_timeout':120})
-engine_puller = create_engine("mysql://testuser:testpassword@192.168.36.21:6033/puller?charset=utf8", connect_args={'connect_timeout': 120})
-db_ = conection["bifrost"]
 
 # config = open("config.json","r")
 # config = json.loads(config.read())
@@ -71,12 +62,23 @@ default_args = {
 # [START instantiate_dag]
 @dag(default_args=default_args, schedule_interval=None, start_date=days_ago(2), tags=['idirect_lima'])
 # @dag(default_args=default_args, schedule_interval='*/10 * * * *', start_date=datetime(2021, 7, 8, 0, 0), tags=['idirect_lima'])
-def puller_idirect(db_,engine):
+def puller_idirect():
     # sys.path.insert(0,os.path.abspath(os.path.dirname(__file__)))
 
     # import confluent_kafka
     # import kafka
     # from kafka.errors import KafkaError
+    uri = "mongodb://bifrostProdUser:Maniac321.@cluster0-shard-00-00.bvdlk.mongodb.net:27017,cluster0-shard-00-01.bvdlk.mongodb.net:27017,cluster0-shard-00-02.bvdlk.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-nn38a4-shard-0&authSource=admin&retryWrites=true&w=majority"
+    conection = MongoClient(uri)
+    # db_ = []
+
+    # config = open("config.json","r")
+    # config = json.loads(config.read())
+    # config = config[0]
+
+
+    engine = create_engine("mysql://admin:Maniac321.@bifrosttiws-instance-1.cn4dord7rrni.us-west-2.rds.amazonaws.com/bifrostprod10dev?charset=utf8", connect_args={'connect_timeout':120})
+    engine_puller = create_engine("mysql://testuser:testpassword@192.168.36.21:6033/puller?charset=utf8", connect_args={'connect_timeout': 120})
 
 
     """
@@ -397,6 +399,7 @@ def puller_idirect(db_,engine):
     ]
     config = config[0]
 
+    db_ = conection["bifrost"]
     coltn_mdb = db_["idirect_test_lima"]
     data_mdb = coltn_mdb.find({'platform':2})
 
@@ -439,7 +442,7 @@ def puller_idirect(db_,engine):
 
 
 # [START dag_invocation]
-puller_idirect = puller_idirect(db_,engine)
+puller_idirect = puller_idirect()
 # [END dag_invocation]
 
 # [END tutorial]
