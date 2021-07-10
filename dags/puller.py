@@ -268,7 +268,6 @@ def puller_idirect():
         )
         print("------comparation")
         print(comparation)
-        print(comparation.columns())
         print("------comparation")
         return {'platform_data':data_platform,'comparation':comparation.to_json(orient="records")}
 
@@ -419,6 +418,7 @@ def puller_idirect():
     old_data = extract_old(key_process,config)
     send_queque(old_data,'case1')
     comp = comparate_old_vs_new(platform_data,old_data)
+    #OBTENER LOS BOTH EN EL KAFKA
     send_qq_new_mysql= send_queque(comp['comparation'],'insertmysql') 
     send_qq_new_mongo= send_queque(comp['comparation'],'insertmongo') 
     send_qq_delete_mysql= send_queque(comp['comparation'],'deletemysql') 
