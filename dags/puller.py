@@ -49,7 +49,7 @@ from confluent_kafka import Producer
 # You can override them on a per-task basis during operator initialization
 default_args = {
     'owner': 'airflow',
-    'depends_on_past': True,
+    'depends_on_past': False,
     # 'start_date': yesterday_at_elevenpm,
     # 'email': ['tech.team@industrydive.com'],
     # 'email_on_failure': True,
