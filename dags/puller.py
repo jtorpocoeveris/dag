@@ -128,7 +128,7 @@ def puller_idirect():
         # df_old = generateConcatKey(df_old,[config['primary_join_cols']['old']])
         df_old = generateConcatKey(df_old,['old_'+config['primary_join_cols']['old']])
         df_old = generateConcatKeySecondary(df_old,config['secondary_join_cols']['old'])
-        return json.loads(df_old.to_json(orient='records'))
+        return [df_old.to_json(orient='records')]
         # return {'data': df_old.to_json(orient='records'), 'status':200}
     @task()
     def extract_mongo(data_mongo,key,config):
@@ -410,8 +410,8 @@ def puller_idirect():
     key_process = str(config["platform_id"])+"-"+str(config["platform_name"])
     platform_data = extract_platform(config)
     old_data = extract_old(key_process,config)
-    send_queque("xddddddd",'case1')
-    comp = comparate_old_vs_new(platform_data,old_data)
+    send_queque(old_data,'case1')
+    comp = comparate_old_vs_new(platform_data,json.loads(old_data[0]))
     send_qq_new_mysql= send_queque(comp['comparation'],'insertmysql') 
     send_qq_new_mongo= send_queque(comp['comparation'],'insertmongo') 
     send_qq_delete_mysql= send_queque(comp['comparation'],'deletemysql') 
