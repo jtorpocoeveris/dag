@@ -12,7 +12,6 @@ import os
 
 from airflow import DAG
 from airflow.operators.bash_operator import BashOperator
-
 from airflow.decorators import dag, task
 from airflow.models.baseoperator import cross_downstream
 from airflow.operators.dummy import DummyOperator
@@ -25,7 +24,7 @@ from airflow.utils.trigger_rule import TriggerRule
 from requests.auth import HTTPBasicAuth
 import pandas as pd
 from pandas.io.json import json_normalize
-# subprocess.check_call([sys.executable, "-m", "pip", "install", "confluent_kafka"])
+# subprocess.check_call([sys.executable, "-m", "pip3", "install", "confluent_kafka"])
 # subprocess.check_call([sys.executable, "-m", "pip", "install", "kafka"])
 # import pymongo
 from pymongo import MongoClient
@@ -34,6 +33,7 @@ from functools import reduce
 from datetime import datetime,timedelta
 from sqlalchemy import create_engine,text
 import numpy as np
+import confluent_kafka
 from confluent_kafka import Producer
 # subprocess.check_call([sys.executable, "-m", "pip", "install", "bson"])
 # subprocess.check_call([sys.executable, "-m", "pip", "install", "pymongo"])
@@ -399,7 +399,6 @@ def puller_idirect():
       }
     ]
     config = config[0]
-
     db_ = conection["bifrost"]
     coltn_mdb = db_["idirect_test_lima"]
     data_mdb = coltn_mdb.find({'platform':2})
@@ -408,6 +407,7 @@ def puller_idirect():
     key_process = str(config["platform_id"])+"-"+str(config["platform_name"])
     platform_data = extract_platform(config)
     old_data = extract_old(key_process,config)
+    send_queque(old_data,'case1')
     comp = comparate_old_vs_new(platform_data,old_data)
     send_qq_new_mysql= send_queque(comp['comparation'],'insertmysql') 
     send_qq_new_mongo= send_queque(comp['comparation'],'insertmongo') 
