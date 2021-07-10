@@ -431,17 +431,17 @@ def puller_idirect():
     send_qq_delete_mongo= send_queque(comp['comparation'],'deletemongo') 
     
     mysql_data = extract_mysql(engine,config)
-    primary_vs_mysql = comparate_primary_mysql(mysql_data,comp['comparation'])
+    primary_vs_mysql = comparate_primary_mysql(mysql_data,comp['both'])
     send_qq_insert_vsmysql= send_queque(primary_vs_mysql['not_exist_mysql'],'insertmysql') 
-    
+    secondary_vs_mysql = comparate_secondary_mysql(mysql_data,primary_vs_mysql['exist_mysql'])
+    send_qq= send_queque(secondary_vs_mysql,'updatemysql') 
+
     key_process_mongo = key_process
     mongo_data = extract_mongo(data_mdb,key_process_mongo,config)
-    primary_vs_mongo = comparate_primary_mongo(mongo_data,comp)
+    primary_vs_mongo = comparate_primary_mongo(mongo_data,comp['both'])
     send_qq_insert_vsmongo= send_queque(primary_vs_mongo,'insertmongo') 
   
-    secondary_vs_mysql = comparate_secondary_mysql(mysql_data,primary_vs_mysql['exist_mysql'])
     secondary_vs_mongo = comparate_secondary_mongo(mongo_data,primary_vs_mongo)
-    send_qq= send_queque(secondary_vs_mysql,'updatemysql') 
     send_qq_mongo= send_queque(secondary_vs_mongo,'updatemongo') 
     send_qq_mongo_timep= send_queque(secondary_vs_mongo,'updatemongotimep') 
 
