@@ -17,6 +17,7 @@ from airflow.models.baseoperator import cross_downstream
 from airflow.operators.dummy import DummyOperator
 from airflow.operators.latest_only import LatestOnlyOperator
 from airflow.utils.trigger_rule import TriggerRule
+from airflow.utils.edgemodifier import Label
 from requests.auth import HTTPBasicAuth
 import pandas as pd
 from pandas.io.json import json_normalize
@@ -416,7 +417,7 @@ def puller_idirect():
     send_qq_mongo= send_queque(secondary_vs_mongo,'updatemongo') 
     send_qq_mongo_timep= send_queque(secondary_vs_mongo,'updatemongotimep') 
     # platform_data
-    mysql_data
+    mysql_data  >> Label("Envia data extraida para comparar")
     old_data
     platform_data
     mongo_data
