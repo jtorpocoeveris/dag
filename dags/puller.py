@@ -160,13 +160,13 @@ def puller_idirect():
 
     @task()
     def send_queque(data,case):
-        # conf = {'bootstrap.servers': "10.233.25.72:9092"}
-        # p = Producer(conf)
-        print(".........................")
+        conf = {'bootstrap.servers': "10.233.25.72:9092"}
+        p = Producer(conf)
+        print("..........HERE...............")
         print(data)
-        print(".........................")
-        # p.produce(case,data)
-        # p.flush()
+        print("..........HERE...............")
+        p.produce(case,data)
+        p.flush()
         return ['OK']
         # return {'data': df_old.to_json(orient='records'), 'status':200}
 
@@ -410,7 +410,7 @@ def puller_idirect():
     key_process = str(config["platform_id"])+"-"+str(config["platform_name"])
     platform_data = extract_platform(config)
     old_data = extract_old(key_process,config)
-    send_queque(old_data,'case1')
+    send_queque(json.dumps(old_data),'case1')
     comp = comparate_old_vs_new(platform_data,old_data)
     send_qq_new_mysql= send_queque(comp['comparation'],'insertmysql') 
     send_qq_new_mongo= send_queque(comp['comparation'],'insertmongo') 
