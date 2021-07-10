@@ -50,6 +50,7 @@ from confluent_kafka import Producer
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
+    'retry_delay': timedelta(seconds=10)
     # 'start_date': yesterday_at_elevenpm,
     # 'email': ['tech.team@industrydive.com'],
     # 'email_on_failure': True,
