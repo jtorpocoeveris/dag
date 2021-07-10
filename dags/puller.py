@@ -407,32 +407,29 @@ def puller_idirect():
     send_qq_delete_mysql= send_queque(comp['comparation'],'deletemysql') 
     send_qq_delete_mongo= send_queque(comp['comparation'],'deletemongo') 
     mysql_data = extract_mysql(engine,config)
-    key_process_mongo = key_process
-    mongo_data = extract_mongo(data_mdb,key_process_mongo,config)
-    # old_vs_new = comparate_old_vs_new( extract_platform(config)['data'],extract_old(key_process)['data'])
     primary_vs_mysql = comparate_primary_mysql(mysql_data,comp)
+    key_process_mongo = key_process
     primary_vs_mongo = comparate_primary_mongo(mongo_data,comp)
     send_qq_insert_vsmysql= send_queque(primary_vs_mysql,'insertmysql') 
     send_qq_insert_vsmongo= send_queque(primary_vs_mongo,'insertmongo') 
+    mongo_data = extract_mongo(data_mdb,key_process_mongo,config)
     
     secondary_vs_mysql = comparate_secondary_mysql(mysql_data,primary_vs_mysql)
     secondary_vs_mongo = comparate_secondary_mongo(mongo_data,primary_vs_mongo)
     send_qq= send_queque(secondary_vs_mysql,'updatemysql') 
     send_qq_mongo= send_queque(secondary_vs_mongo,'updatemongo') 
     send_qq_mongo_timep= send_queque(secondary_vs_mongo,'updatemongotimep') 
+
+
+    # mysql_data
+    # old_data
     # platform_data
-    mysql_data
-    old_data
-    platform_data
-    mongo_data
-    comp >> [send_qq_new_mysql,send_qq_new_mongo,send_qq_delete_mysql,send_qq_delete_mongo]
-    comp >> primary_vs_mysql >> send_qq_insert_vsmysql
-    comp >> primary_vs_mongo >> send_qq_insert_vsmongo
-    primary_vs_mysql >> secondary_vs_mysql >> send_qq
-    primary_vs_mongo >> secondary_vs_mongo >> [send_qq_mongo,send_qq_mongo_timep]
-    # old_vs_new
-    # old_vs_new >> comparate_primary_mysql(old_vs_new['both'], extract_mysql(engine,config)['data'],old_vs_new['platform_data'])
-    # primary_vs_mysql
+    # mongo_data
+    # comp >> [send_qq_new_mysql,send_qq_new_mongo,send_qq_delete_mysql,send_qq_delete_mongo]
+    # comp >> primary_vs_mysql >> send_qq_insert_vsmysql
+    # comp >> primary_vs_mongo >> send_qq_insert_vsmongo
+    # primary_vs_mysql >> secondary_vs_mysql >> send_qq
+    # primary_vs_mongo >> secondary_vs_mongo >> [send_qq_mongo,send_qq_mongo_timep]
     # [END main_flow]
 
 
