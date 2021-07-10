@@ -45,6 +45,7 @@ conection = MongoClient(uri)
 # config = config[0]
 engine = create_engine("mysql://admin:Maniac321.@bifrosttiws-instance-1.cn4dord7rrni.us-west-2.rds.amazonaws.com/bifrostprod10dev?charset=utf8", connect_args={'connect_timeout':120})
 engine_puller = create_engine("mysql://testuser:testpassword@192.168.36.21:6033/puller?charset=utf8", connect_args={'connect_timeout': 120})
+db_ = conection["bifrost"]
 
 # config = open("config.json","r")
 # config = json.loads(config.read())
@@ -396,7 +397,6 @@ def puller_idirect(db_,engine):
     ]
     config = config[0]
 
-    db_ = conection["bifrost"]
     coltn_mdb = db_["idirect_test_lima"]
     data_mdb = coltn_mdb.find({'platform':2})
 
