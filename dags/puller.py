@@ -266,6 +266,10 @@ def puller_idirect():
             indicator="_merge_",
             how='outer'
         )
+        print("------comparation")
+        print(comparation)
+        print(comparation.columns())
+        print("------comparation")
         return {'platform_data':data_platform,'comparation':comparation.to_json(orient="records")}
 
 
