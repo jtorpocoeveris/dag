@@ -1,6 +1,0 @@
-pymongo
-boto3
-redis
-pandas
-mysqlclient
-xmltodict
