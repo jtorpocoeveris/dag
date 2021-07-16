@@ -3,12 +3,12 @@
 # [START]
 # [START import_module]
 
-import redis
-import json
-import requests
-import sys
-import subprocess
-import os
+# import redis
+# import json
+# import requests
+# import sys
+# import subprocess
+# import os
 
 
 from airflow.decorators import dag, task
@@ -17,18 +17,18 @@ from airflow.models.baseoperator import cross_downstream
 from airflow.operators.dummy import DummyOperator
 from airflow.operators.latest_only import LatestOnlyOperator
 from airflow.utils.trigger_rule import TriggerRule
-from requests.auth import HTTPBasicAuth
-import pandas as pd
-from pandas.io.json import json_normalize
-subprocess.check_call([sys.executable, "-m", "pip", "install", "confluent_kafka"])
-# subprocess.check_call([sys.executable, "-m", "pip", "install", "kafka"])
-# import pymongo
-# from pymongo import MongoClient
-from functools import reduce
-from datetime import datetime,timedelta
-from sqlalchemy import create_engine,text
-import numpy as np
-from confluent_kafka import Producer
+# from requests.auth import HTTPBasicAuth
+# import pandas as pd
+# from pandas.io.json import json_normalize
+# subprocess.check_call([sys.executable, "-m", "pip", "install", "confluent_kafka"])
+# # subprocess.check_call([sys.executable, "-m", "pip", "install", "kafka"])
+# # import pymongo
+# # from pymongo import MongoClient
+# from functools import reduce
+# from datetime import datetime,timedelta
+# from sqlalchemy import create_engine,text
+# import numpy as np
+# from confluent_kafka import Producer
 # subprocess.check_call([sys.executable, "-m", "pip", "install", "bson"])
 # subprocess.check_call([sys.executable, "-m", "pip", "install", "pymongo"])
 
@@ -48,7 +48,7 @@ default_args = {
 # start_date=days_ago(2)
 
 # [START instantiate_dag]
-@dag(default_args=default_args, schedule_interval='*/10 * * * *', start_date=datetime(2021, 7, 8, 0, 0), tags=['idirect_lima'])
+@dag(default_args=default_args, schedule_interval='*/2 * * * *', start_date=datetime(2021, 7, 8, 0, 0), tags=['idirect_lima'])
 # @dag(default_args=default_args, schedule_interval='*/10 * * * *', start_date=datetime(2021, 7, 8, 0, 0), tags=['idirect_lima'])
 def puller_idirect_two():
     # sys.path.insert(0,os.path.abspath(os.path.dirname(__file__)))
@@ -66,8 +66,8 @@ def puller_idirect_two():
     # config = config[0]
 
 
-    engine = create_engine("mysql://admin:Maniac321.@bifrosttiws-instance-1.cn4dord7rrni.us-west-2.rds.amazonaws.com/bifrostprod10dev?charset=utf8", connect_args={'connect_timeout':120})
-    engine_puller = create_engine("mysql://testuser:testpassword@192.168.36.21:6033/puller?charset=utf8", connect_args={'connect_timeout': 120})
+    # engine = create_engine("mysql://admin:Maniac321.@bifrosttiws-instance-1.cn4dord7rrni.us-west-2.rds.amazonaws.com/bifrostprod10dev?charset=utf8", connect_args={'connect_timeout':120})
+    # engine_puller = create_engine("mysql://testuser:testpassword@192.168.36.21:6033/puller?charset=utf8", connect_args={'connect_timeout': 120})
 
 
     """
