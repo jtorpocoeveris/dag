@@ -120,7 +120,7 @@ def puller_idirect():
     # [START extract]
     @task()
     def extract_old(key,config):
-        redis_cn = redis.Redis(host= '10.233.49.128',    port= '6379',    password="tmCN3FwkP7")
+        redis_cn = redis.Redis(host= '10.233.1.101',    port= '6379',    password="tmCN3FwkP7")
         response = redis_cn.get(key)
         response = json.loads(response)
         df_old = pd.DataFrame(response)
