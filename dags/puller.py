@@ -363,7 +363,7 @@ def puller_idirect():
         # comparate = pd.DataFrame(json.loads(comparate))
         both = comparate
         # exist_mysql_p = comparate[comparate['exist_mysql']==1]
-        exist_mongo_p['exist_mongo_secondary'] = np.where(both['concat_key_generate_secondary'].isin(list(df_mongo['concat_key_generate_secondary'])) , 1, 0)
+        both['exist_mongo_secondary'] = np.where(both['concat_key_generate_secondary'].isin(list(df_mongo['concat_key_generate_secondary'])) , 1, 0)
 
         exist_mongo_s = both[both['exist_mongo_secondary']==1]
         not_exist_mongo_s = both[both['exist_mongo_secondary']==0]
