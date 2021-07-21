@@ -157,7 +157,7 @@ def puller_idirect():
 
     @task()
     def send_queque(data,case):
-        conf = {'bootstrap.servers': "10.233.25.72:9092"}
+        conf = {'bootstrap.servers': "10.233.32.15:9092"}
         p = Producer(conf)
         p.produce(case,data)
         p.flush()
