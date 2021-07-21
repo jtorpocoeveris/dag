@@ -289,8 +289,11 @@ def puller_idirect():
     def comparate_primary_mysql(df_mysql,comparate):
         df_mysql = pd.DataFrame(json.loads(df_mysql))
         platform_data = pd.DataFrame(comparate['platform_data'])
-        
-        comparate = pd.DataFrame(json.loads(comparate['both']))
+        try:
+            comparate = pd.DataFrame(json.loads(comparate['both']))
+        except:
+            comparate = pd.DataFrame(columns=['concat_key_generate'])
+   
         both = comparate
     # def comparate_primary_mysql(both,df_mysql,df_plat):
         both['exist_mysql'] = np.where(both['concat_key_generate'].isin(list(df_mysql['concat_key_generate'])) , 1, 0)
@@ -303,8 +306,11 @@ def puller_idirect():
     def comparate_primary_mongo(df_mongo,comparate):
         df_mongo = pd.DataFrame(df_mongo)
         platform_data = pd.DataFrame(comparate['platform_data'])
-        comparate = pd.DataFrame(json.loads(comparate['comparation']))
-        both = comparate[comparate['_merge_']=='both']
+        try:
+            comparate = pd.DataFrame(json.loads(comparate['both']))
+        except:
+            comparate = pd.DataFrame(columns=['concat_key_generate'])
+        both = comparate
     # def comparate_primary_mysql(both,df_mysql,df_plat):
         both['exist_mongo'] = np.where(both['concat_key_generate'].isin(list(df_mongo['concat_key_generate'])) , 1, 0)
         exist_mongo_p = both[both['exist_mongo']==1]
