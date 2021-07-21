@@ -339,17 +339,26 @@ def puller_idirect():
         # exist_mysql_p = comparate[comparate['exist_mysql']==1]
         both['exist_mysql_secondary'] = np.where(both['concat_key_generate_secondary'].isin(list(df_mysql['concat_key_generate_secondary'])) , 1, 0)
 
-        exist_mysql_p = both[both['exist_mysql_secondary']==1]
-        not_exist_mysql_p = both[both['exist_mysql_secondary']==0]
+        exist_mysql_s = both[both['exist_mysql_secondary']==1]
+        not_exist_mysql_s = both[both['exist_mysql_secondary']==0]
         print("exist_")
         print(exist_mysql_p)
         print("notexist_")
         print(not_exist_mysql_p)
+        if exist_mysql_s.empty:
+            exist_mysql_s = []
+        else:
+            exist_mysql_s = exist_mysql_s.to_json(orient="records")
+
+        if not_exist_mysql_s.empty:
+            not_exist_mysql_s = []
+        else:
+            not_exist_mysql_s = not_exist_mysql_s.to_json(orient="records")
 
         # both = comparate[comparate['_merge_']=='both']
     # def comparate_primary_mysql(both,df_mysql,df_plat):
         # both['exist_mysql'] = np.where(both['concat_key_generate'].isin(list(df_mysql['concat_key_generate'])) , 1, 0)
-        return {'exist_mysql_secondary':exist_mysql_p.to_json(orient="records"),'not_exist_mysql_secondary':not_exist_mysql_p.to_json(orient="records")}
+        return {'exist_mysql_secondary':exist_mysql_s,'not_exist_mysql_secondary':not_exist_mysql_s}
         # return ['ok']
 
     @task()
