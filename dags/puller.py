@@ -125,7 +125,7 @@ def puller_idirect():
         try:
             response = json.loads(response)
         except:
-            return []
+            return [{}]
         df_old = pd.DataFrame(response)
         df_old = df_old[df_old.columns].add_prefix('old_')
         # df_old = generateConcatKey(df_old,[config['primary_join_cols']['old']])
