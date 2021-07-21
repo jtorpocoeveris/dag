@@ -250,7 +250,7 @@ def puller_idirect():
         df1 = pd.DataFrame(data_platform)
         if len(data_old)==0:
             print("here")
-            # both_send=data_platform.to_json(orient="records")
+            both_sendata_platformd=data_platform.to_json(orient="records")
             return {'platform_data':data_platform,'comparation':[],'both':data_platform,'only_platform':data_platform,'only_old':[]}
         else:
             df2 = pd.DataFrame(json.loads(data_old[0]))
@@ -291,9 +291,10 @@ def puller_idirect():
     @task()
     def comparate_primary_mysql(df_mysql,comparate):
         df_mysql = pd.DataFrame(json.loads(df_mysql))
-        platform_data = pd.DataFrame(comparate['platform_data'])
-        comparate = pd.DataFrame(comparate['both'])
+        platform_data = pd.DataFrame(json.loads(comparate['platform_data']))
+        comparate = pd.DataFrame(json.loads(comparate['both']))
         both = comparate
+        print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
     # def comparate_primary_mysql(both,df_mysql,df_plat):
         both['exist_mysql'] = np.where(both['concat_key_generate'].isin(list(df_mysql['concat_key_generate'])) , 1, 0)
         exist_mysql_p = both[both['exist_mysql']==1]
@@ -304,8 +305,14 @@ def puller_idirect():
     @task()
     def comparate_primary_mongo(df_mongo,comparate):
         df_mongo = pd.DataFrame(df_mongo)
-        platform_data = pd.DataFrame(comparate['platform_data'])
+        print("df_mongo")
+        print(df_mongo)
+        platform_data = pd.DataFrame(json.loads(comparate['platform_data']))
+        print("platform_data")
+        print(platform_data)
         both = pd.DataFrame(comparate['both'])
+        print("both")
+        print(both)
         # except:
         #     comparate = pd.DataFrame(columns=['concat_key_generate'])
         # both = comparate
