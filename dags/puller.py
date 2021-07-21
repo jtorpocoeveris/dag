@@ -248,10 +248,13 @@ def puller_idirect():
     @task()
     def comparate_old_vs_new(data_platform,data_old):
         df1 = pd.DataFrame(data_platform)
-        try:
+        if len(data_old)==0:
+            print("here")
+            both_send=data_platform.to_json(orient="records")
+            return {'platform_data':data_platform,'comparation':[],'both':both_send,'only_platform':both_send,'only_old':[]}
+        else:
             df2 = pd.DataFrame(json.loads(data_old[0]))
-        except:
-            df2 = pd.DataFrame(columns=['concat_key_generate'])
+
             
         # df1 = pd.DataFrame(df1['concat_key_generate'])
         # df2 = pd.DataFrame(df2['concat_key_generate'])
