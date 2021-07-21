@@ -335,15 +335,21 @@ def puller_idirect():
         except:
             comparate = pd.DataFrame(columns=['concat_key_generate_secondary'])
         df_mysql = pd.DataFrame(json.loads(df_mysql))
-        exist_mysql_p = comparate
+        both = comparate
         # exist_mysql_p = comparate[comparate['exist_mysql']==1]
-        exist_mysql_p['exist_mysql_secondary'] = np.where(exist_mysql_p['concat_key_generate_secondary'].isin(list(df_mysql['concat_key_generate_secondary'])) , 1, 0)
+        both['exist_mysql_secondary'] = np.where(both['concat_key_generate_secondary'].isin(list(df_mysql['concat_key_generate_secondary'])) , 1, 0)
 
+        exist_mysql_p = both[both['exist_mysql_secondary']==1]
+        not_exist_mysql_p = both[both['exist_mysql_secondary']==0]
+        print("exist_")
+        print(exist_mysql_p)
+        print("notexist_")
+        print(not_exist_mysql_p)
 
         # both = comparate[comparate['_merge_']=='both']
     # def comparate_primary_mysql(both,df_mysql,df_plat):
         # both['exist_mysql'] = np.where(both['concat_key_generate'].isin(list(df_mysql['concat_key_generate'])) , 1, 0)
-        return exist_mysql_p.to_json(orient="records")
+        return {'exist_mysql_secondary':exist_mysql_p.to_json(orient="records"),'not_exist_mysql_secondary':not_exist_mysql_p.to_json(orient="records")}
         # return ['ok']
 
     @task()
@@ -355,15 +361,20 @@ def puller_idirect():
         except:
             comparate = pd.DataFrame(columns=['concat_key_generate_secondary'])
         # comparate = pd.DataFrame(json.loads(comparate))
-        exist_mongo_p = comparate
+        both = comparate
         # exist_mysql_p = comparate[comparate['exist_mysql']==1]
-        exist_mongo_p['exist_mongo_secondary'] = np.where(exist_mongo_p['concat_key_generate_secondary'].isin(list(df_mongo['concat_key_generate_secondary'])) , 1, 0)
+        exist_mongo_p['exist_mongo_secondary'] = np.where(both['concat_key_generate_secondary'].isin(list(df_mongo['concat_key_generate_secondary'])) , 1, 0)
 
-
+        exist_mongo_s = both[both['exist_mongo_secondary']==1]
+        not_exist_mongo_s = both[both['exist_mongo_secondary']==0]
+        print("exist_")
+        print(exist_mongo_s)
+        print("notexist_")
+        print(not_exist_mongo_s)
         # both = comparate[comparate['_merge_']=='both']
     # def comparate_primary_mysql(both,df_mysql,df_plat):
         # both['exist_mysql'] = np.where(both['concat_key_generate'].isin(list(df_mysql['concat_key_generate'])) , 1, 0)
-        return exist_mongo_p.to_json(orient="records")
+        return {'exist_mongo_secondary':exist_mongo_s.to_json(orient="records"),'not_exist_mongo_secondary':not_exist_mongo_s.to_json(orient="records")}
         # return ['ok']
 
 
