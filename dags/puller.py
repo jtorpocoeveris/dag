@@ -376,6 +376,19 @@ def puller_idirect():
 
         exist_mongo_s = both[both['exist_mongo_secondary']==1]
         not_exist_mongo_s = both[both['exist_mongo_secondary']==0]
+
+        if exist_mongo_s.empty:
+            exist_mongo_s = []
+        else:
+            exist_mongo_s = exist_mongo_s.to_json(orient="records")
+
+        if not_exist_mongo_s.empty:
+            not_exist_mongo_s = []
+        else:
+            not_exist_mongo_s = not_exist_mongo_s.to_json(orient="records")
+
+
+
         print("exist_")
         print(exist_mongo_s)
         print("notexist_")
@@ -383,7 +396,7 @@ def puller_idirect():
         # both = comparate[comparate['_merge_']=='both']
     # def comparate_primary_mysql(both,df_mysql,df_plat):
         # both['exist_mysql'] = np.where(both['concat_key_generate'].isin(list(df_mysql['concat_key_generate'])) , 1, 0)
-        return {'exist_mongo_secondary':exist_mongo_s.to_json(orient="records"),'not_exist_mongo_secondary':not_exist_mongo_s.to_json(orient="records")}
+        return {'exist_mongo_secondary':exist_mongo_s,'not_exist_mongo_secondary':not_exist_mongo_s}
         # return ['ok']
 
 
