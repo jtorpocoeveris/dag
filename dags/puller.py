@@ -289,6 +289,7 @@ def puller_idirect():
     def comparate_primary_mysql(df_mysql,comparate):
         df_mysql = pd.DataFrame(json.loads(df_mysql))
         platform_data = pd.DataFrame(comparate['platform_data'])
+        
         comparate = pd.DataFrame(json.loads(comparate['both']))
         both = comparate
     # def comparate_primary_mysql(both,df_mysql,df_plat):
@@ -435,14 +436,14 @@ def puller_idirect():
     send_qq_delete_mongo= send_queque(comp['only_old'],'deletemongo') 
     
     mysql_data = extract_mysql(engine,config)
-    primary_vs_mysql = comparate_primary_mysql(mysql_data,comp['both'])
+    primary_vs_mysql = comparate_primary_mysql(mysql_data,comp)
     send_qq_insert_vsmysql= send_queque(primary_vs_mysql['not_exist_mysql'],'insertmysql') 
     secondary_vs_mysql = comparate_secondary_mysql(mysql_data,primary_vs_mysql['exist_mysql'])
     send_qq= send_queque(secondary_vs_mysql,'updatemysql') 
 
     key_process_mongo = key_process
     mongo_data = extract_mongo(data_mdb,key_process_mongo,config)
-    primary_vs_mongo = comparate_primary_mongo(mongo_data,comp['both'])
+    primary_vs_mongo = comparate_primary_mongo(mongo_data,comp)
     send_qq_insert_vsmongo= send_queque(primary_vs_mongo,'insertmongo') 
   
     secondary_vs_mongo = comparate_secondary_mongo(mongo_data,primary_vs_mongo)
