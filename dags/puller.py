@@ -292,11 +292,7 @@ def puller_idirect():
     def comparate_primary_mysql(df_mysql,comparate):
         df_mysql = pd.DataFrame(json.loads(df_mysql))
         platform_data = pd.DataFrame(comparate['platform_data'])
-        try:
-            comparate = pd.DataFrame(json.loads(comparate['both']))
-        except:
-            comparate = pd.DataFrame(columns=['concat_key_generate'])
-   
+        comparate = pd.DataFrame(comparate['both'])
         both = comparate
     # def comparate_primary_mysql(both,df_mysql,df_plat):
         both['exist_mysql'] = np.where(both['concat_key_generate'].isin(list(df_mysql['concat_key_generate'])) , 1, 0)
