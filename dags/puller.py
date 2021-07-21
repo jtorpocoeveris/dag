@@ -122,7 +122,10 @@ def puller_idirect():
     def extract_old(key,config):
         redis_cn = redis.Redis(host= '10.233.1.101',    port= '6379',    password="tmCN3FwkP7")
         response = redis_cn.get(key)
-        response = json.loads(response)
+        try:
+            response = json.loads(response)
+        except:
+            return []
         df_old = pd.DataFrame(response)
         df_old = df_old[df_old.columns].add_prefix('old_')
         # df_old = generateConcatKey(df_old,[config['primary_join_cols']['old']])
