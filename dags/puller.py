@@ -304,7 +304,19 @@ def puller_idirect():
         print(exist_mysql_p)
         print("not_exist_mysql_p")
         print(not_exist_mysql_p)
-        return {'exist_mysql':exist_mysql_p.to_json(orient="records"),'not_exist_mysql':not_exist_mysql_p.to_json(orient="records")}
+
+        if exist_mysql_p.empty:
+            exist_mysql_p=[]
+        else:
+            exist_mysql_p=exist_mysql_p.to_json(orient="records")
+
+
+        if not_exist_mysql_p.empty:
+            not_exist_mysql_p=[]
+        else:
+            not_exist_mysql_p=not_exist_mysql_p.to_json(orient="records")
+
+        return {'exist_mysql':exist_mysql_p,'not_exist_mysql':not_exist_mysql_p}
     
     @task()
     def comparate_primary_mongo(df_mongo,comparate):
@@ -321,8 +333,21 @@ def puller_idirect():
         # exist_mongo_p = platform_data[platform_data['concat_key_generate'].isin(list(exist_mongo_p['concat_key_generate']))]
         print("exist_mongo_p")
         print(exist_mongo_p)
+        if exist_mongo_p.empty:
+            exist_mongo_p=[]
+        else:
+            exist_mongo_p=exist_mongo_p.to_json(orient="records")
+
+    
+        if not_exist_mongo_p.empty:
+            not_exist_mongo_p=[]
+        else:
+            not_exist_mongo_p=not_exist_mongo_p.to_json(orient="records")
+
+
+
         # return exist_mongo_p.to_json(orient="records")
-        return {'exist_mongo':exist_mongo_p.to_json(orient="records"),'not_exist_mongo':not_exist_mongo_p.to_json(orient="records")}
+        return {'exist_mongo':exist_mongo_p,'not_exist_mongo':not_exist_mongo_p}
 
 
 
