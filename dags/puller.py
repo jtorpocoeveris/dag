@@ -342,9 +342,9 @@ def puller_idirect():
         exist_mysql_s = both[both['exist_mysql_secondary']==1]
         not_exist_mysql_s = both[both['exist_mysql_secondary']==0]
         print("exist_")
-        print(exist_mysql_p)
+        print(exist_mysql_s)
         print("notexist_")
-        print(not_exist_mysql_p)
+        print(not_exist_mysql_s)
         if exist_mysql_s.empty:
             exist_mysql_s = []
         else:
