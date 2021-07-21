@@ -125,7 +125,7 @@ def puller_idirect():
         try:
             response = json.loads(response)
         except:
-            return [{}]
+            return []
         df_old = pd.DataFrame(response)
         df_old = df_old[df_old.columns].add_prefix('old_')
         # df_old = generateConcatKey(df_old,[config['primary_join_cols']['old']])
@@ -248,7 +248,11 @@ def puller_idirect():
     @task()
     def comparate_old_vs_new(data_platform,data_old):
         df1 = pd.DataFrame(data_platform)
-        df2 = pd.DataFrame(json.loads(data_old[0]))
+        try:
+            df2 = pd.DataFrame(json.loads(data_old[0]))
+        except:
+            df2 = pd.DataFrame(columns=['concat_key_generate'])
+            
         # df1 = pd.DataFrame(df1['concat_key_generate'])
         # df2 = pd.DataFrame(df2['concat_key_generate'])
         comparation = df1.merge(
