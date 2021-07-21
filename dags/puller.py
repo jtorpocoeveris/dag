@@ -298,7 +298,7 @@ def puller_idirect():
         both['exist_mysql'] = np.where(both['concat_key_generate'].isin(list(df_mysql['concat_key_generate'])) , 1, 0)
         exist_mysql_p = both[both['exist_mysql']==1]
         not_exist_mysql_p = both[both['exist_mysql']==0]
-        exist_mysql_p = platform_data[platform_data['concat_key_generate'].isin(list(exist_mysql_p['concat_key_generate']))]
+        # exist_mysql_p = platform_data[platform_data['concat_key_generate'].isin(list(exist_mysql_p['concat_key_generate']))]
         print("exist_mysql_p")
         print(exist_mysql_p)
         print("not_exist_mysql_p")
@@ -316,7 +316,7 @@ def puller_idirect():
     # def comparate_primary_mysql(both,df_mysql,df_plat):
         both['exist_mongo'] = np.where(both['concat_key_generate'].isin(list(df_mongo['concat_key_generate'])) , 1, 0)
         exist_mongo_p = both[both['exist_mongo']==1]
-        exist_mongo_p = platform_data[platform_data['concat_key_generate'].isin(list(exist_mongo_p['concat_key_generate']))]
+        # exist_mongo_p = platform_data[platform_data['concat_key_generate'].isin(list(exist_mongo_p['concat_key_generate']))]
         print("exist_mongo_p")
         print(exist_mongo_p)
         return exist_mongo_p.to_json(orient="records")
