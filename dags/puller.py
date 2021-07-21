@@ -160,6 +160,7 @@ def puller_idirect():
 
     @task()
     def send_queque(data,case):
+        print(data)
         conf = {'bootstrap.servers': "10.233.32.15:9092"}
         p = Producer(conf)
         p.produce(case,data)
@@ -316,11 +317,12 @@ def puller_idirect():
     # def comparate_primary_mysql(both,df_mysql,df_plat):
         both['exist_mongo'] = np.where(both['concat_key_generate'].isin(list(df_mongo['concat_key_generate'])) , 1, 0)
         exist_mongo_p = both[both['exist_mongo']==1]
+        not_exist_mongo_p = both[both['exist_mongo']==0]
         # exist_mongo_p = platform_data[platform_data['concat_key_generate'].isin(list(exist_mongo_p['concat_key_generate']))]
         print("exist_mongo_p")
         print(exist_mongo_p)
-        return exist_mongo_p.to_json(orient="records")
-
+        # return exist_mongo_p.to_json(orient="records")
+        return {'exist_mongo':exist_mongo_p.to_json(orient="records"),'not_exist_mongo':not_exist_mongo_p.to_json(orient="records")}
 
 
 
@@ -490,16 +492,16 @@ def puller_idirect():
     primary_vs_mysql = comparate_primary_mysql(mysql_data,comp)
     send_qq_insert_vsmysql= send_queque(primary_vs_mysql['not_exist_mysql'],'insertmysql') 
     secondary_vs_mysql = comparate_secondary_mysql(mysql_data,primary_vs_mysql['exist_mysql'])
-    send_qq= send_queque(secondary_vs_mysql,'updatemysql') 
+    send_qq= send_queque(secondary_vs_mysql['not_exist_mysql_secondary'],'updatemysql') 
 
     key_process_mongo = key_process
     mongo_data = extract_mongo(data_mdb,key_process_mongo,config)
     primary_vs_mongo = comparate_primary_mongo(mongo_data,comp)
-    send_qq_insert_vsmongo= send_queque(primary_vs_mongo,'insertmongo') 
+    send_qq_insert_vsmongo= send_queque(primary_vs_mongo['not_exist_mongo'],'insertmongo') 
   
-    secondary_vs_mongo = comparate_secondary_mongo(mongo_data,primary_vs_mongo)
-    send_qq_mongo= send_queque(secondary_vs_mongo,'updatemongo') 
-    send_qq_mongo_timep= send_queque(secondary_vs_mongo,'updatemongotimep') 
+    secondary_vs_mongo = comparate_secondary_mongo(mongo_data,primary_vs_mongo['exist_mongo'])
+    send_qq_mongo= send_queque(secondary_vs_mongo['not_exist_mongo_secondary'],'updatemongo') 
+    send_qq_mongo_timep= send_queque(secondary_vs_mongo['exist_mongo_secondary'],'updatemongotimep') 
 
 
     # mysql_data
