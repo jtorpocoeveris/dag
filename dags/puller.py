@@ -309,11 +309,10 @@ def puller_idirect():
     def comparate_primary_mongo(df_mongo,comparate):
         df_mongo = pd.DataFrame(df_mongo)
         platform_data = pd.DataFrame(comparate['platform_data'])
-        try:
-            comparate = pd.DataFrame(json.loads(comparate['both']))
-        except:
-            comparate = pd.DataFrame(columns=['concat_key_generate'])
-        both = comparate
+        both = pd.DataFrame(comparate['both'])
+        # except:
+        #     comparate = pd.DataFrame(columns=['concat_key_generate'])
+        # both = comparate
     # def comparate_primary_mysql(both,df_mysql,df_plat):
         both['exist_mongo'] = np.where(both['concat_key_generate'].isin(list(df_mongo['concat_key_generate'])) , 1, 0)
         exist_mongo_p = both[both['exist_mongo']==1]
