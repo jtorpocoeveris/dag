@@ -310,7 +310,7 @@ def puller_idirect():
         platform_data = pd.DataFrame(json.loads(comparate['platform_data']))
         print("platform_data")
         print(platform_data)
-        both = pd.DataFrame(comparate['both'])
+        both = pd.DataFrame(json.loads(comparate['both']))
         print("both")
         print(both)
         # except:
