@@ -370,8 +370,7 @@ def puller_idirect():
     @task()
     def comparate_secondary_mysql(df_mysql,comparate):
         try:
-            comparate = pd.DataFrame(json.loads(comparate['exist_mysql']
-            ))
+            comparate = pd.DataFrame(comparate['exist_mysql'])
         except:
             comparate = pd.DataFrame(columns=['concat_key_generate_secondary'])
         df_mysql = pd.DataFrame(json.loads(df_mysql))
@@ -407,7 +406,7 @@ def puller_idirect():
         print("comparatecomparatecomparatecomparatecomparate")
         print(comparate)
         try:
-            comparate = pd.DataFrame(json.loads(comparate['exist_mongo']))
+            comparate = pd.DataFrame(comparate['exist_mongo'])
         except:
             comparate = pd.DataFrame(columns=['concat_key_generate_secondary'])
         # comparate = pd.DataFrame(json.loads(comparate))
