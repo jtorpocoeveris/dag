@@ -260,7 +260,7 @@ def puller_idirect():
         if len(data_old)==0:
             print("here")
             data_platform=df1.to_json(orient="records")
-            return {'platform_data':data_platform,'comparation':[],'both':data_platform,'only_platform':data_platform,'only_old':[]}
+            return {'platform_data':data_platform,'comparation':[],'both':data_platform,'only_platform':[],'only_old':[]}
         else:
             df2 = pd.DataFrame(json.loads(data_old[0]))
 
