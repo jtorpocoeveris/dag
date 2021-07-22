@@ -305,13 +305,13 @@ def puller_idirect():
         if exist_mysql_p.empty:
             exist_mysql_p=[]
         else:
-            exist_mysql_p=exist_mysql_p.to_json(orient="records")
+            exist_mysql_p=json.loads(exist_mysql_p.to_json(orient="records"))
 
 
         if not_exist_mysql_p.empty:
             not_exist_mysql_p=[]
         else:
-            not_exist_mysql_p=not_exist_mysql_p.to_json(orient="records")
+            not_exist_mysql_p=json.loads(not_exist_mysql_p.to_json(orient="records"))
         print("exist_mysql_p")
         print(exist_mysql_p)
         print("not_exist_mysql_p")
@@ -336,13 +336,14 @@ def puller_idirect():
         if exist_mongo_p.empty:
             exist_mongo_p=[]
         else:
-            exist_mongo_p=exist_mongo_p.to_json(orient="records")
+            exist_mongo_p=json.loads(exist_mongo_p.to_json(orient="records"))
 
     
         if not_exist_mongo_p.empty:
             not_exist_mongo_p=[]
         else:
-            not_exist_mongo_p=not_exist_mongo_p.to_json(orient="records")
+            not_exist_mongo_p=json.loads(not_exist_mongo_p.to_json(orient="records"))
+            # not_exist_mongo_p=not_exist_mongo_p.to_json(orient="records")
 
         print("exist_mongo_p")
         print(exist_mongo_p)
