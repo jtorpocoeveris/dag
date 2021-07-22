@@ -395,7 +395,8 @@ def puller_idirect():
     @task()
     def comparate_secondary_mongo(df_mongo,comparate):
         df_mongo = pd.DataFrame(df_mongo)
-
+        print("comparatecomparatecomparatecomparatecomparate")
+        print(comparate)
         try:
             comparate = pd.DataFrame(json.loads(comparate))
         except:
@@ -526,7 +527,7 @@ def puller_idirect():
     key_process_mongo = key_process
     mongo_data = extract_mongo(data_mdb,key_process_mongo,config)
     primary_vs_mongo = comparate_primary_mongo(mongo_data,comp)
-    send_qq_insert_vsmongo= send_queque(primary_vs_mongo,'insertmongo') 
+    send_qq_insert_vsmongo= send_queque(primary_vs_mongo['not_exist_mongo'],'insertmongo') 
   
     secondary_vs_mongo = comparate_secondary_mongo(mongo_data,primary_vs_mongo['exist_mongo'])
     send_qq_mongo= send_queque(secondary_vs_mongo['not_exist_mongo_secondary'],'updatemongo') 
