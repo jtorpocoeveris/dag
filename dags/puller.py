@@ -167,11 +167,11 @@ def puller_idirect():
         p.flush()
         return [case]
     @task()
-    def send_queque_insertmdb(data,case):
+    def send_queque_kafka(data,case,key):
         print(data)
         conf = {'bootstrap.servers': "10.233.51.148:9092"}
         p = Producer(conf)
-        p.produce(case,json.dumps(data['not_exist_mongo']))
+        p.produce(case,json.dumps(data[key]))
         p.flush()
         return [case]
         # return {'data': df_old.to_json(orient='records'), 'status':200}
@@ -536,11 +536,11 @@ def puller_idirect():
     key_process_mongo = key_process
     mongo_data = extract_mongo(data_mdb,key_process_mongo,config)
     primary_vs_mongo = comparate_primary_mongo(mongo_data,comp)
-    send_qq_insert_vsmongo= send_queque_insertmdb(primary_vs_mongo,'insertmongo') 
+    send_qq_insert_vsmongo= send_queque_kafka(primary_vs_mongo,'insertmongo','not_exist_mongo') 
   
     secondary_vs_mongo = comparate_secondary_mongo(mongo_data,primary_vs_mongo)
-    send_qq_mongo= send_queque(secondary_vs_mongo['not_exist_mongo_secondary'],'updatemongo') 
-    send_qq_mongo_timep= send_queque(secondary_vs_mongo['exist_mongo_secondary'],'updatemongotimep') 
+    send_qq_mongo= send_queque_kafka(secondary_vs_mongo,'updatemongo','not_exist_mongo_secondary') 
+    send_qq_mongo_timep= send_queque_kafka(secondary_vs_mongo,'updatemongotimep','exist_mongo_secondary') 
 
 
     # mysql_data
