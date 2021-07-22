@@ -165,7 +165,7 @@ def puller_idirect():
         p = Producer(conf)
         p.produce(case,data)
         p.flush()
-        return ['OK']
+        return [case]
         # return {'data': df_old.to_json(orient='records'), 'status':200}
 
 
