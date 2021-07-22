@@ -390,12 +390,12 @@ def puller_idirect():
         if exist_mysql_s.empty:
             exist_mysql_s = []
         else:
-            exist_mysql_s = exist_mysql_s.to_json(orient="records")
+            exist_mysql_s = json.loads(exist_mysql_s.to_json(orient="records"))
 
         if not_exist_mysql_s.empty:
             not_exist_mysql_s = []
         else:
-            not_exist_mysql_s = not_exist_mysql_s.to_json(orient="records")
+            not_exist_mysql_s = json.loads(not_exist_mysql_s.to_json(orient="records"))
 
         # both = comparate[comparate['_merge_']=='both']
     # def comparate_primary_mysql(both,df_mysql,df_plat):
@@ -423,12 +423,12 @@ def puller_idirect():
         if exist_mongo_s.empty:
             exist_mongo_s = []
         else:
-            exist_mongo_s = exist_mongo_s.to_json(orient="records")
+            exist_mongo_s = json.loads(exist_mongo_s.to_json(orient="records"))
 
         if not_exist_mongo_s.empty:
             not_exist_mongo_s = []
         else:
-            not_exist_mongo_s = not_exist_mongo_s.to_json(orient="records")
+            not_exist_mongo_s = json.loads(not_exist_mongo_s.to_json(orient="records"))
 
 
 
