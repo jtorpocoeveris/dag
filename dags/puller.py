@@ -495,7 +495,6 @@ def puller_idirect():
           "mysql": [
             "mysql_siteId",
             "mysql_id_nms"
-            ""
           ],
           "mongo": [
             "mongo_Name",
