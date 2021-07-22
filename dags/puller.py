@@ -171,7 +171,7 @@ def puller_idirect():
         print(data)
         conf = {'bootstrap.servers': "10.233.51.148:9092"}
         p = Producer(conf)
-        p.produce(case,data['not_exist_mongo'])
+        p.produce(case,json.dumps(data['not_exist_mongo']))
         p.flush()
         return [case]
         # return {'data': df_old.to_json(orient='records'), 'status':200}
