@@ -161,7 +161,7 @@ def puller_idirect():
     @task()
     def send_queque(data,case):
         print(data)
-        conf = {'bootstrap.servers': "10.233.32.15:9092"}
+        conf = {'bootstrap.servers': "10.233.51.148:9092"}
         p = Producer(conf)
         p.produce(case,data)
         p.flush()
@@ -323,6 +323,8 @@ def puller_idirect():
         df_mongo = pd.DataFrame(df_mongo)
         platform_data = pd.DataFrame(json.loads(comparate['platform_data']))
         both = pd.DataFrame(json.loads(comparate['both']))
+        print("both")
+        print(both)
         # except:
         #     comparate = pd.DataFrame(columns=['concat_key_generate'])
         # both = comparate
