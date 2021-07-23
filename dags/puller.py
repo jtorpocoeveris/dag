@@ -538,7 +538,7 @@ def puller_idirect():
     # [END]
     # [START finish]
     @task()
-    def finish():
+    def finish(response_verify):
         """
         #### Load task
         A simple Load task which takes in the result of the Transform task and
@@ -566,7 +566,7 @@ def puller_idirect():
     rs = start()
     response_verify = verify(rs)
     if response_verify is None:
-        finish()
+        finish(response_verify)
         return 'ok'
     config = [
       {
