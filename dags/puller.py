@@ -303,6 +303,9 @@ def puller_idirect():
     @task()
     def comparate_primary_mysql(df_mysql,comparate):
         df_mysql = pd.DataFrame(json.loads(df_mysql))
+        if df_mysql.empty:
+            df_mysql = pd.DataFrame(columns=['concat_key_generate'])
+
         platform_data = pd.DataFrame(json.loads(comparate['platform_data']))
         comparate = pd.DataFrame(json.loads(comparate['both']))
         both = comparate
@@ -382,6 +385,10 @@ def puller_idirect():
         except:
             comparate = pd.DataFrame(columns=['concat_key_generate_secondary'])
         df_mysql = pd.DataFrame(json.loads(df_mysql))
+        
+        if df_mysql.empty:
+            df_mysql = pd.DataFrame(columns=['concat_key_generate_secondary'])
+
         both = comparate
         # exist_mysql_p = comparate[comparate['exist_mysql']==1]
         both['exist_mysql_secondary'] = np.where(both['concat_key_generate_secondary'].isin(list(df_mysql['concat_key_generate_secondary'])) , 1, 0)
@@ -413,6 +420,10 @@ def puller_idirect():
         df_mongo = pd.DataFrame(df_mongo)
         print("comparatecomparatecomparatecomparatecomparate")
         print(comparate)
+        
+        if df_mongo.empty:
+            df_mongo = pd.DataFrame(columns=['concat_key_generate_secondary'])
+
         try:
             comparate = pd.DataFrame(comparate['exist_mongo'])
         except:
