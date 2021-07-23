@@ -563,7 +563,7 @@ def puller_idirect():
     # [START main_flow]
     start()
     response_verify = verify()
-    if response_verify >0:
+    if response_verify["v_total"] >0:
         finish()
         return 'ok'
     config = [
