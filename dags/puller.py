@@ -167,7 +167,7 @@ def puller_idirect():
             
     # [START extract]
     @task()
-    def extract_old(key,config):
+    def extract_old(key,config,rs):
         redis_cn = redis.Redis(host= '10.233.1.101',    port= '6379',    password="tmCN3FwkP7")
         response = redis_cn.get(key)
         try:
@@ -182,7 +182,7 @@ def puller_idirect():
         return [df_old.to_json(orient='records')]
         # return {'data': df_old.to_json(orient='records'), 'status':200}
     @task()
-    def extract_mongo(data_mongo,key,config):
+    def extract_mongo(data_mongo,key,config,rs):
             
         list_cur = list(data_mongo)
         if len(list_cur)==0:
@@ -230,7 +230,7 @@ def puller_idirect():
 
 
     @task()
-    def extract_platform(config):
+    def extract_platform(config,rs):
         try:
             response = requests.get(config['url'], auth=HTTPBasicAuth(config['user'],config['password']), verify=config['verify'],timeout=config['timeout'])
             response = response.text
@@ -291,7 +291,7 @@ def puller_idirect():
 
 
     @task()
-    def extract_mysql(engine,config):
+    def extract_mysql(engine,config,rs):
         query = "SELECT  * FROM "+str(config['mysql_table'])+" where status = 1 and  platformId = "+str(config['platform_id'])
         df_mysql_total = pd.read_sql_query(query, engine)
         df_mysql_total = df_mysql_total[df_mysql_total.columns].add_prefix('mysql_')
@@ -615,8 +615,8 @@ def puller_idirect():
 
 
     key_process = str(config["platform_id"])+"-"+str(config["platform_name"])
-    platform_data = extract_platform(config)
-    old_data = extract_old(key_process,config)
+    platform_data = extract_platform(config,response_verify)
+    old_data = extract_old(key_process,config,response_verify)
     comp = comparate_old_vs_new(platform_data,old_data)
     #OBTENER LOS BOTH EN EL KAFKA
     send_qq_new_mysql= send_queque_kafka(comp,'insertmysql','only_platform') 
@@ -624,14 +624,14 @@ def puller_idirect():
     send_qq_delete_mysql= send_queque_kafka(comp,'deletemysql','only_old') 
     send_qq_delete_mongo= send_queque_kafka(comp,'deletemongo','only_old') 
     
-    mysql_data = extract_mysql(engine,config)
+    mysql_data = extract_mysql(engine,config,response_verify)
     primary_vs_mysql = comparate_primary_mysql(mysql_data,comp)
     send_qq_insert_vsmysql= send_queque_kafka(primary_vs_mysql,'insertmysql','not_exist_mysql') 
     secondary_vs_mysql = comparate_secondary_mysql(mysql_data,primary_vs_mysql)
     send_qq= send_queque_kafka(secondary_vs_mysql,'updatemysql','not_exist_mysql_secondary') 
 
     key_process_mongo = key_process
-    mongo_data = extract_mongo(data_mdb,key_process_mongo,config)
+    mongo_data = extract_mongo(data_mdb,key_process_mongo,config,response_verify)
     primary_vs_mongo = comparate_primary_mongo(mongo_data,comp)
     send_qq_insert_vsmongo= send_queque_kafka(primary_vs_mongo,'insertmongo','not_exist_mongo') 
   
