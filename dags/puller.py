@@ -556,14 +556,14 @@ def puller_idirect():
         v_mysql = verifyByGroup('mysql', ['insertmysql','updatemysql'])
         v_mongo = verifyByGroup('mongo', ['insertmongo','updatemongotimep','updatemongo'])
         v_total = v_mysql + v_mongo
-        return v_total
+        return [v_total]
     # [END finish]
 
 
     # [START main_flow]
     start()
     response_verify = verify()
-    if int(response_verify) >0:
+    if int(response_verify[0]) > 0:
         finish()
         return 'ok'
     config = [
