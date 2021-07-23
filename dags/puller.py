@@ -552,7 +552,7 @@ def puller_idirect():
 
     # [START verify]
     @task()
-    def verify():
+    def verify(rs):
         v_mysql = verifyByGroup('mysql', ['insertmysql','updatemysql'])
         v_mongo = verifyByGroup('mongo', ['insertmongo','updatemongotimep','updatemongo'])
         v_total = v_mysql + v_mongo
@@ -563,8 +563,8 @@ def puller_idirect():
 
 
     # [START main_flow]
-    start()
-    response_verify = verify()
+    rs = start()
+    response_verify = verify(rs)
     if response_verify is None:
         finish()
         return 'ok'
