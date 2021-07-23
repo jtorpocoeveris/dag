@@ -339,6 +339,9 @@ def puller_idirect():
         except:
             comparate = pd.DataFrame(columns=['concat_key_generate'])
         both = comparate
+
+        if df_mongo.empty:
+            df_mongo = pd.DataFrame(columns=['concat_key_generate'])
     # def comparate_primary_mysql(both,df_mysql,df_plat):
         both['exist_mongo'] = np.where(both['concat_key_generate'].isin(list(df_mongo['concat_key_generate'])) , 1, 0)
         exist_mongo_p = both[both['exist_mongo']==1]
