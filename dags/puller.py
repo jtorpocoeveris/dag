@@ -94,6 +94,54 @@ def puller_idirect():
 
 
 
+    def verifyByGroup(groupid,topics):
+
+        consumer = confluent_kafka.Consumer({'bootstrap.servers': "10.233.51.148:9092",'group.id': groupid})
+
+
+        print("%-50s  %9s  %9s" % ("Topic [Partition]", "Committed", "Lag"))
+        print("=" * 72)
+        sum_lag = 0
+        sum_msg = 0
+        for topic in topics:
+            # Get the topic's partitions
+            metadata = consumer.list_topics(topic, timeout=10)
+            if metadata.topics[topic].error is not None:
+                raise confluent_kafka.KafkaException(metadata.topics[topic].error)
+
+            # Construct TopicPartition list of partitions to query
+            partitions = [confluent_kafka.TopicPartition(topic, p) for p in metadata.topics[topic].partitions]
+
+            # Query committed offsets for this group and the given partitions
+            committed = consumer.committed(partitions, timeout=10)
+
+            for partition in committed:
+                # Get the partitions low and high watermark offsets.
+                (lo, hi) = consumer.get_watermark_offsets(partition, timeout=10, cached=False)
+
+                if partition.offset == confluent_kafka.OFFSET_INVALID:
+                    offset = "-"
+                else:
+                    offset = "%d" % (partition.offset)
+
+                if hi < 0:
+                    lag = "no hwmark"  # Unlikely
+                elif partition.offset < 0:
+                    # No committed offset, show total message count as lag.
+                    # The actual message count may be lower due to compaction
+                    # and record deletions.
+                    lag = "%d" % (hi - lo)
+                else:
+                    lag = "%d" % (hi - partition.offset)
+                sum_lag += int(lag)
+                sum_msg += int(offset)
+                
+                print("%-50s  %9s  %9s" % (
+                    "{} [{}]".format(partition.topic, partition.partition), offset, lag))
+
+
+        consumer.close()
+        return sum_lag
 
     def generateConcatKeySecondary(df,cols):
         try:
@@ -475,19 +523,49 @@ def puller_idirect():
 
     # [END extract]
 
-    # [START load]
+    # [START start]
     @task()
-    def load(data):
+    def start():
         """
         #### Load task
         A simple Load task which takes in the result of the Transform task and
         instead of saving it to end user review, just prints it out.
         """
-
+        print("START")
         return ['ok']
-    # [END load]
+    # [END start ]
+
+    # [END]
+    # [START finish]
+    @task()
+    def finish():
+        """
+        #### Load task
+        A simple Load task which takes in the result of the Transform task and
+        instead of saving it to end user review, just prints it out.
+        """
+        print("FINISH")
+        return ['ok']
+    # [END finish]
+
+
+
+    # [START verify]
+    @task()
+    def verify():
+        v_mysql = verifyByGroup('mysql', ['insertmysql','updatemysql'])
+        v_mongo = verifyByGroup('mongo', ['insertmongo','updatemongotimep','updatemongo'])
+        v_total = v_mysql + v_mongo
+        return {"v_total":v_total,"v_mongo":v_mongo,"v_mysql":v_mysql}
+    # [END finish]
+
+
     # [START main_flow]
-    
+    start()
+    response_verify = verify()
+    if response_verify >0:
+        finish()
+        return 'ok'
     config = [
       {
         "route_trunk": "data",
@@ -558,17 +636,6 @@ def puller_idirect():
     secondary_vs_mongo = comparate_secondary_mongo(mongo_data,primary_vs_mongo)
     send_qq_mongo= send_queque_kafka(secondary_vs_mongo,'updatemongo','not_exist_mongo_secondary') 
     send_qq_mongo_timep= send_queque_kafka(secondary_vs_mongo,'updatemongotimep','exist_mongo_secondary') 
-
-
-    # mysql_data
-    # old_data
-    # platform_data
-    # mongo_data
-    # comp >> [send_qq_new_mysql,send_qq_new_mongo,send_qq_delete_mysql,send_qq_delete_mongo]
-    # comp >> primary_vs_mysql >> send_qq_insert_vsmysql
-    # comp >> primary_vs_mongo >> send_qq_insert_vsmongo
-    # primary_vs_mysql >> secondary_vs_mysql >> send_qq
-    # primary_vs_mongo >> secondary_vs_mongo >> [send_qq_mongo,send_qq_mongo_timep]
     # [END main_flow]
 
 
